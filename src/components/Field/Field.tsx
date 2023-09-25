@@ -5,6 +5,9 @@ import Map from '../../types/Map';
 import xy2index from '../../utils/xy2index';
 import index2xy from '../../utils/index2xy';
 import clsx from 'clsx';
+import playSound from '../../utils/playSound';
+import explode from './phit.wav';
+import dead from './dead.wav';
 
 const getShipId = (entity: any): number => {
 	if (!isShip(entity)) return -1;
@@ -51,6 +54,7 @@ const isDeadShip = (map: Map, shipId: number) => (
 const isGameOver = (map: Map) => (
 	allShipIds.every(id => isDeadShip(map, id)
 ))
+
 
 const fillBorders = (map: Map): Map => {
 
@@ -118,10 +122,12 @@ class Field extends React.Component<Props, State> {
 
 			else if (isDeadShip(map, getShipId(entity))) {
 				console.info('play sound ship dead');
+				playSound(dead);
 			}
 
 			else {
 				console.info('play sound ship hit')
+				playSound(explode);
 			}
 
 
@@ -131,6 +137,7 @@ class Field extends React.Component<Props, State> {
 
 	}
 
+
 	render() {
 
 		const { enemy } = this.props;
@@ -138,56 +145,76 @@ class Field extends React.Component<Props, State> {
 
 		return <div className={clsx(styles.field, enemy && styles.enemy)}>
 
-			{new Array(100).fill(0).map((_, index) => {
+			<div />
+			<div>1</div>
+			<div>2</div>
+			<div>3</div>
+			<div>4</div>
+			<div>5</div>
+			<div>6</div>
+			<div>7</div>
+			<div>8</div>
+			<div>9</div>
+			<div>10</div>
 
-				const entity = map[index];
+			{new Array(10).fill(0).map((_, y) => <React.Fragment key={y}>
 
-				if (isMissHit(entity)) {
-					return (
-						<div key={index}>
-							<div>•</div>
-						</div>
-					)
-				}
+				<div>{String.fromCharCode(y + 97)}</div>
+
+				{new Array(10).fill(0).map((_, colIndex) => {
+
+					const index = xy2index(colIndex, y);
+
+					const entity = map[index];
+
+					if (isMissHit(entity)) {
+						return (
+							<div key={index}>
+								<div>•</div>
+							</div>
+						)
+					}
+	
+	
+					if (isShip(entity)) {
+	
+						const isHit = isHitShip(entity);
+						const leftObject = (enemy ? isHitShip : isShip)(map[xy2index(index2xy(index, -1, 0))]);
+						const rightObject = (enemy ? isHitShip : isShip)(map[xy2index(index2xy(index, 1, 0))]);
+						const topObject = (enemy ? isHitShip : isShip)(map[xy2index(index2xy(index, 0, -1))]);
+						const bottomObject = (enemy ? isHitShip : isShip)(map[xy2index(index2xy(index, 0, 1))]);
+	
+						const isSquare = Boolean(!leftObject && !rightObject && !topObject && !bottomObject);
+						const isVerStart = Boolean(!leftObject && !rightObject && !topObject && bottomObject);
+						const isVerEnd = Boolean(!leftObject && !rightObject && topObject && !bottomObject);
+						const isVerCenter = Boolean(!leftObject && !rightObject && topObject && bottomObject);
+						const isHorStart = Boolean(!leftObject && rightObject && !topObject && !bottomObject);
+						const isHorEnd = Boolean(leftObject && !rightObject && !topObject && !bottomObject);
+						const isHorCenter = Boolean(leftObject && rightObject && !topObject && !bottomObject);
+	
+	
+	
+						return (
+							<div key={index} onClick={() => this.makeShot(index)}>
+								{isSquare && <div className={clsx(styles.ship, styles.one, isHit && styles.hit)} />}
+								{isVerStart && <div className={clsx(styles.ship, styles.verStart, isHit && styles.hit)} />}
+								{isVerEnd && <div className={clsx(styles.ship, styles.verEnd, isHit && styles.hit)} />}
+								{isHorStart && <div className={clsx(styles.ship, styles.horStart, isHit && styles.hit)} />}
+								{isHorEnd && <div className={clsx(styles.ship, styles.horEnd, isHit && styles.hit)} />}
+								{isVerCenter && <div className={clsx(styles.ship, styles.verCenter, isHit && styles.hit)} />}
+								{isHorCenter && <div className={clsx(styles.ship, styles.horCenter, isHit && styles.hit)} />}
+							</div>
+						)
+					}
+	
+	
+					return <div key={index} onClick={() => this.makeShot(index)} />
+
+				})}
 
 
-				if (isShip(entity)) {
 
-					const isHit = isHitShip(entity);
-					const leftObject = (enemy ? isHitShip : isShip)(map[xy2index(index2xy(index, -1, 0))]);
-					const rightObject = (enemy ? isHitShip : isShip)(map[xy2index(index2xy(index, 1, 0))]);
-					const topObject = (enemy ? isHitShip : isShip)(map[xy2index(index2xy(index, 0, -1))]);
-					const bottomObject = (enemy ? isHitShip : isShip)(map[xy2index(index2xy(index, 0, 1))]);
-
-					const isSquare = Boolean(!leftObject && !rightObject && !topObject && !bottomObject);
-					const isVerStart = Boolean(!leftObject && !rightObject && !topObject && bottomObject);
-					const isVerEnd = Boolean(!leftObject && !rightObject && topObject && !bottomObject);
-					const isVerCenter = Boolean(!leftObject && !rightObject && topObject && bottomObject);
-					const isHorStart = Boolean(!leftObject && rightObject && !topObject && !bottomObject);
-					const isHorEnd = Boolean(leftObject && !rightObject && !topObject && !bottomObject);
-					const isHorCenter = Boolean(leftObject && rightObject && !topObject && !bottomObject);
-
-
-
-					return (
-						<div key={index} onClick={() => this.makeShot(index)}>
-							{isSquare && <div className={clsx(styles.ship, styles.one, isHit && styles.hit)} />}
-							{isVerStart && <div className={clsx(styles.ship, styles.verStart, isHit && styles.hit)} />}
-							{isVerEnd && <div className={clsx(styles.ship, styles.verEnd, isHit && styles.hit)} />}
-							{isHorStart && <div className={clsx(styles.ship, styles.horStart, isHit && styles.hit)} />}
-							{isHorEnd && <div className={clsx(styles.ship, styles.horEnd, isHit && styles.hit)} />}
-							{isVerCenter && <div className={clsx(styles.ship, styles.verCenter, isHit && styles.hit)} />}
-							{isHorCenter && <div className={clsx(styles.ship, styles.horCenter, isHit && styles.hit)} />}
-						</div>
-					)
-				}
-
-
-				return <div key={index} onClick={() => this.makeShot(index)} />
-
-
-
-			})}
+			</React.Fragment>)}
 
 
 

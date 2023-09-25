@@ -6,6 +6,27 @@ const search = new URLSearchParams(window.location.search);
 const peer = new Peer(search.get('me') || '');
 
 
+try {
+	// @ts-ignore
+	window?.Telegram?.WebApp?.requestWriteAccess?.();
+} catch (e) {}
+
+try {
+	// @ts-ignore
+	window?.Telegram?.WebApp?.setHeaderColor('#517DA2');
+} catch (e) {}
+
+try {
+	// @ts-ignore
+	window?.Telegram?.WebApp?.enableClosingConfirmation();
+} catch (e) {}
+
+try {
+	// @ts-ignore
+	window?.Telegram?.WebApp?.expand();
+} catch (e) {}
+
+
 
 class App extends React.Component {
 
@@ -17,6 +38,8 @@ class App extends React.Component {
 	}
 
 	componentDidMount(): void {
+
+
 
 
 		/*
@@ -65,11 +88,12 @@ class App extends React.Component {
 	}
 
 	render() {
-		return <div style={{position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 50}}>
+		return <div style={{position: 'fixed', top: 20, left: 20, right: 20, bottom: 20, display: 'flex', gap: 20, flexDirection: 'column'}}>
+
+			<Field />
 
 			<Field enemy={true} />
 
-			<Field />
 
 		</div>
 	}
