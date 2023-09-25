@@ -1,0 +1,173 @@
+.field {
+	min-width: 300px;
+	min-height: 300px;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+
+	& > * {
+		// aspect-ratio: 1/1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		position: relative;;
+		
+		&::before {
+			content: '';
+			top: 0px;
+			left: 0px;
+			right: 0px;
+			bottom: 0px;
+			position: absolute;
+			border: 1px solid red;
+		}
+
+
+		& > * {
+			position: absolute;
+			opacity: 0.7;
+		}
+
+		.one {
+			z-index: 1;
+			height: 100%;
+			top: 0px;
+			left: 0px;
+			aspect-ratio: 1/1;
+			opacity: 1;
+			background-image: url('./im_ship_one_1.png');
+			background-position: center;
+			background-repeat: no-repeat;
+			background-size: 100% 100%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			&.hit::before { content: 'x'; }
+		}
+
+		.verStart {
+			z-index: 1;
+			top: 0px;
+			left: 0px;
+			bottom: 0px;
+			right: 0px;
+			border-left: 3px solid blue;
+			border-right: 3px solid blue;
+			border-top: 3px solid blue;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			&.hit::before { content: 'x'; }
+		}
+
+		.verEnd {
+			z-index: 1;
+			top: 0px;
+			left: 0px;
+			bottom: 0px;
+			right: 0px;
+			border-left: 3px solid blue;
+			border-right: 3px solid blue;
+			border-bottom: 3px solid blue;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			&.hit::before { content: 'x'; }
+		}
+
+		.horStart {
+			z-index: 1;
+			top: 0px;
+			left: 0px;
+			bottom: 0px;
+			right: 0px;
+			border-left: 3px solid blue;
+			border-bottom: 3px solid blue;
+			border-top: 3px solid blue;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			&.hit::before { content: 'x'; }
+		}
+
+		.horEnd {
+			z-index: 1;
+			top: 0px;
+			left: 0px;
+			bottom: 0px;
+			right: 0px;
+			border-top: 3px solid blue;
+			border-bottom: 3px solid blue;
+			border-right: 3px solid blue;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			&.hit::before { content: 'x'; }
+		}
+
+		.verCenter {
+			z-index: 1;
+			top: 0px;
+			left: 0px;
+			bottom: 0px;
+			right: 0px;
+			border-left: 3px solid blue;
+			border-right: 3px solid blue;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			&.hit::before { content: 'x'; }
+		}
+
+
+		.horCenter {
+			z-index: 1;
+			top: 0px;
+			left: 0px;
+			bottom: 0px;
+			right: 0px;
+			border-top: 3px solid blue;
+			border-bottom: 3px solid blue;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			&.hit::before { content: 'x'; }
+		}
+
+
+		@mixin ship_ver($size, $bg) {
+			z-index: 1;
+			left: 0px;
+			right: 0px;
+			top: 0px;
+			// aspect-ratio: 1/$size;
+			opacity: 1;
+			background-image: url($bg);
+			background-position: center;
+			background-repeat: no-repeat;
+			background-size: 100% 100%;
+		}
+
+		@mixin ship_hor($size, $bg) {
+			@include ship_ver($size, $bg);
+			transform-origin: 100% 0%;
+			transform: translateX(-100%) rotate(-90deg);
+		}
+
+		.two_ver { @include ship_ver(2, './im_ship_two_1.png'); }
+		.two_hor { @include ship_hor(2, './im_ship_two_1.png'); }
+
+		.three_ver { @include ship_ver(3, './im_ship_three_1.png'); }
+		.three_hor { @include ship_hor(3, './im_ship_three_1.png'); }
+
+		.four_ver { @include ship_ver(4, './im_ship_four_1.png'); }
+		.four_hor { @include ship_hor(4, './im_ship_four_1.png'); }
+
+
+	}
+
+	&.enemy .ship:not(.hit) {
+		opacity: 0.3;
+	}
+
+
+}

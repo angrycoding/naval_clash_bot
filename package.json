@@ -1,0 +1,37 @@
+{
+  "name": "naval_clash_bot",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "clsx": "^2.0.0",
+    "peerjs": "^1.5.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "scripts": {
+    "start": "BROWSER=none DISABLE_ESLINT_PLUGIN=true BROWSER=none react-app-rewired start",
+    "build": "react-app-rewired build"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "typescript": "^4.9.5",
+    "@types/node": "^16.18.53",
+    "@types/react": "^18.2.22",
+    "@types/react-dom": "^18.2.7",
+    "sass": "^1.68.0",
+    "react-scripts": "5.0.1",
+    "customize-cra": "^1.0.0",
+    "react-app-rewired": "^2.2.1"
+  }
+}
