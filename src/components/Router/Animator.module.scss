@@ -1,0 +1,110 @@
+@keyframes ANIMATING {
+	from { opacity: 1; }
+	from { top: 1; }
+}
+
+@keyframes currentToLeft {
+	from { transform: translateX(0%); }
+	to { transform: translateX(-100%); }
+}
+
+@keyframes nextToLeft {
+	from { transform: translateX(100%); }
+	to { transform: translateX(0%); }
+}
+
+@keyframes nextToLeftOpacity {
+	from { transform: translateX(100%); opacity: 0; }
+	to { transform: translateX(0%); opacity: 1; }
+}
+
+@keyframes currentToRight {
+	from { transform: translateX(0%); }
+	to { transform: translateX(100%); }
+}
+
+@keyframes nextToRight {
+	from { transform: translateX(-100%); }
+	to { transform: translateX(0%); }
+}
+
+@keyframes nextToRightOpacity {
+	from { transform: translateX(-100%); opacity: 0; }
+	to { transform: translateX(0%); opacity: 1; }
+}
+
+@keyframes currentToDown {
+	from { transform: translateY(0%); }
+	to { transform: translateY(100%); }
+}
+
+@keyframes nextToDown {
+	from { transform: translateY(-100%); }
+	to { transform: translateY(0%); }
+}
+
+@keyframes currentToUp {
+	from { transform: translateY(0%); }
+	to { transform: translateY(-100%); }
+}
+  
+@keyframes nextToUp {
+	from { transform: translateY(100%); }
+	to { transform: translateY(0%); }
+}
+
+@keyframes opacityToZero {
+	from { opacity: 1; }
+	to { opacity: 0; }
+}
+
+.wrapper, .wrapper > * {
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	right: 0px;
+	left: 0px;
+	animation-duration: var(--router-animation-duration-ms);
+	animation-fill-mode: forwards;
+	animation-timing-function: cubic-bezier(0.465, 0.183, 0.153, 0.946);
+	// background-color: white;
+}
+
+.wrapper.animating {
+	animation-name: ANIMATING;
+	::-webkit-scrollbar {
+		width: 0;  /* Remove scrollbar space */
+	}
+}
+
+
+// неактивный слой всегда скрыт за экраном
+.inactive {
+	z-index: 1;
+	transform: translateX(100%);
+}
+
+// во время анимации игнорируем мышь во всем поддереве
+.wrapper.animating, .wrapper.animating * {
+	pointer-events: none;
+}
+
+
+.slideToLeft .active { animation-name: currentToLeft; }
+.slideToLeft .inactive { animation-name: nextToLeft; }
+
+.slideToLeftOpacity .inactive { animation-name: nextToLeftOpacity; }
+.slideToRightOpacity .inactive { animation-name: nextToRightOpacity; }
+
+.slideToRight .active { animation-name: currentToRight; }
+.slideToRight .inactive { animation-name: nextToRight; }
+
+.slideToDown .active { animation-name: currentToDown; }
+.slideToDown .inactive { animation-name: nextToDown; }
+
+.slideToUp .active { animation-name: currentToUp; }
+.slideToUp .inactive { animation-name: nextToUp; }
+
+.opacity .active { z-index: 324234; animation-name: opacityToZero; }
+.opacity .inactive { transform: translateX(0%); }
+

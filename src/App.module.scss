@@ -11,3 +11,21 @@
 		border: 1px solid red;
 	}
 }
+
+// style={{backgroundImage: "url('https://img2.labirint.ru/rcimg/f7df1aa7f29ba9f4961a93811ffcb712/960x540/books81/809978/ph_01.jpg?1635657913')"}}
+.layer {
+	--itemHeight: calc(414px / 10);
+	
+	background-color: white;
+
+	background-image: repeating-linear-gradient(
+		to bottom,
+		lime 0px, lime 1px,
+		transparent 1px, transparent calc(var(--itemHeight) * 2)
+	), repeating-linear-gradient(
+		to right,
+		lime 0px, lime 1px,
+		transparent 1px, transparent calc(var(--itemHeight) * 2)
+	);
+	
+}

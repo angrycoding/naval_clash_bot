@@ -1,0 +1,28 @@
+.layout {
+	position: absolute;
+	top: calc(100vw/13);
+	left: calc(100vw/13);
+	right: calc(100vw/13);
+	bottom: 20px;
+	display: flex;
+	flex-direction: column;
+}
+
+.field {
+	pointer-events: none;
+	flex: 1;
+}
+
+.disabled .field {
+	opacity: 0.7;
+}
+
+.buttons {
+	gap: 20px;
+	display: flex;
+	flex-direction: column;
+	& > * {
+		flex: 1;
+		padding: 20px;
+	}
+}

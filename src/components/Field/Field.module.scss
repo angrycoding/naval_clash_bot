@@ -1,45 +1,103 @@
+.bar {
+	display: grid;
+	grid-template-columns: 1fr 10fr;
+
+
+	& > *:nth-child(1) {
+		grid-column: 2;
+		display: grid;
+		grid-template-columns: repeat(10, 1fr);
+		& > * {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			aspect-ratio: 1/1;
+		}
+	}
+
+	& > *:nth-child(2) {
+		grid-row: 2;
+		& > * {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			aspect-ratio: 1/1;
+		}
+	}
+
+}
+
+
+
 .field {
 	display: grid;
-	grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+	grid-template-columns: repeat(10, 1fr);
 
 	touch-action: none;
 
-	flex: 1;
+	// 
+
+	position: relative;
+
+
+	&::before {
+		content: '';
+		top: 0px;
+		left: 0px;
+		right: 0px;
+		bottom: 0px;
+		position: absolute;
+		border: 4px solid blue;
+		border-radius: 0px;
+	}
 
 	& > * {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		align-content: center;
+		// display: flex;
+		// align-items: center;
+		// justify-content: center;
+		// align-content: center;
+		// aspect-ratio: 1/1;
 		position: relative;
+		// &::before {
+		// 	content: '';
+		// 	top: 0px;
+		// 	left: 0px;
+		// 	right: 0px;
+		// 	bottom: 0px;
+		// 	position: absolute;
+		// 	// border: 1px solid red;
+		// }
 	}
 
-	& > *:nth-child(-n+11) {
-		border: 1px solid blue;
-	}
+	// & > *:nth-child(-n+11):not(:first-child) {
+	// 	// border: 1px solid blue;
+	// 	border-bottom: 3px solid red;
+	// }
 
-	& > *:nth-child(11n+1) {
-		border: 1px solid lime;
-	}
+	// & > *:nth-child(n+112) {
+	// 	border-bottom: 3px solid red;
+	// }
+
+	// & > *:nth-child(11n+1):not(:fis) {
+	// 	border-right: 3px solid red;
+	// }
 
 
-	& > *:nth-child(n+12):not(:nth-child(11n+1)) {
+	// & > *:nth-child(n+12):not(:nth-child(11n+1)) {
 		
-		&::before {
-			content: '';
-			top: 0px;
-			left: 0px;
-			right: 0px;
-			bottom: 0px;
-			position: absolute;
-			border: 1px solid red;
-		}
+	// 	&::before {
+	// 		content: '';
+	// 		top: 0px;
+	// 		left: 0px;
+	// 		right: 0px;
+	// 		bottom: 0px;
+	// 		position: absolute;
+	// 	}
 
 
 
 
-	}
-
+	// }
 
 
 	@mixin ship {
