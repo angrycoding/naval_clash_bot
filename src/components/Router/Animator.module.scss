@@ -58,6 +58,12 @@
 	to { opacity: 0; }
 }
 
+.wrapper {
+	::-webkit-scrollbar {
+		display: none;
+	}
+}
+
 .wrapper, .wrapper > * {
 	position: absolute;
 	top: 0px;
@@ -72,9 +78,9 @@
 
 .wrapper.animating {
 	animation-name: ANIMATING;
-	::-webkit-scrollbar {
-		width: 0;  /* Remove scrollbar space */
-	}
+	// ::-webkit-scrollbar {
+	// 	width: 0;  /* Remove scrollbar space */
+	// }
 }
 
 

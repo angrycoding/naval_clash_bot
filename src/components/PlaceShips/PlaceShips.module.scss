@@ -1,15 +1,24 @@
-.layout {
-	position: absolute;
-	top: calc(100vw/13);
-	left: calc(100vw/13);
-	right: calc(100vw/13);
-	bottom: 20px;
+.wrapper {
+	width: 100%;
+	height: 100%;
 	display: flex;
+	padding: 20px;
 	flex-direction: column;
+	justify-content: center;
+	gap: 32px;
+	align-items: center;
+	// padding-bottom: var(--cellsize);
+	// padding-left: var(--cellsize);
+	// padding-right: var(--cellsize);
+	& > *:first-child {
+		width: 100%;
+	}
 }
 
-.field {
-	pointer-events: none;
+
+
+
+.spacer {
 	flex: 1;
 }
 
@@ -18,11 +27,27 @@
 }
 
 .buttons {
-	gap: 20px;
+	gap: 32px;
 	display: flex;
 	flex-direction: column;
 	& > * {
 		flex: 1;
-		padding: 20px;
+	}
+}
+
+@media screen and (orientation:portrait) {
+	.buttons {
+		width: 100%;
+	}
+}
+
+
+@media screen and (orientation:landscape) {
+	.wrapper {
+		flex-direction: row;
+		& > *:first-child {
+			width: auto;
+			height: 100%;
+		}
 	}
 }

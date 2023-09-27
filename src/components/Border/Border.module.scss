@@ -1,0 +1,30 @@
+
+.box{
+	// margin:25px;
+	// width:250px;
+	// height:250px;
+	// background:#fff;
+	// float:left; 
+	// text-align: center;
+	position: relative;
+  }
+
+  .box::before{
+	background-color: white;
+	box-shadow: 0px 0px 4px rgba(black, 0.2);
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	content: '';
+	border-style: solid;
+	filter: blur(0.3px);
+	// backdrop-filter: blur(1px);
+	border-width: var(--border-size1) var(--border-size2) var(--border-size3) var(--border-size4);
+	border-color: currentColor;
+	border-radius: var(--border-round5) var(--border-round1) var(--border-round6) var(--border-round2)/var(--border-round3) var(--border-round7) var(--border-round4) var(--border-round8);
+	transform-origin: 50% 50%;
+	transform: var(--transform);
+  }
+

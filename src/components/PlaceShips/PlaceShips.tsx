@@ -2,6 +2,10 @@ import React from 'react';
 import Field from '../Field/Field';
 import styles from './PlaceShips.module.scss';
 import clsx from 'clsx';
+import Border from '../Border/Border';
+import Button from '../Button/Button';
+import Modal from '../Modal/Modal';
+import Router from '../Router/Router';
 
 interface State {
 	ready: boolean;
@@ -25,19 +29,22 @@ class PlaceShips extends React.Component<{}, State> {
 
 	render() {
 		const { ready } = this.state;
-		return <div className={clsx(styles.layout, ready && styles.disabled)}>
-			<div className={styles.field}>
+		return <div className={styles.wrapper}>
+
 				<Field ref={this.field} />
+
+				<div className={styles.spacer} />
+
+				<div className={styles.buttons}>
+					<Button onClick={() => Router.go('/battle')} disabled={ready}>
+						I AM READY
+					</Button>
+					<Button onClick={this.placeShips} disabled={ready}>
+						CHANGE LAYOUT
+					</Button>
+				</div>
+				
 			</div>
-			<div className={styles.buttons}>
-				<button onClick={this.ready} disabled={ready}>
-					I AM READY
-				</button>
-				<button onClick={this.placeShips} disabled={ready}>
-					CHANGE LAYOUT
-				</button>
-			</div>
-		</div>
 	}
 }
 

@@ -26,7 +26,7 @@ class Route extends React.Component<RouteProps> {}
 interface RouterProps {
 	className?: string;
 	style?: CSSProperties;
-	children: React.ReactElement<RouteProps>[];
+	children: React.ReactElement<RouteProps> | React.ReactElement<RouteProps>[];
 }
 
 class Router extends React.Component<RouterProps> {

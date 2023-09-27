@@ -1,107 +1,64 @@
-.bar {
-	display: grid;
-	grid-template-columns: 1fr 10fr;
-
-
-	& > *:nth-child(1) {
-		grid-column: 2;
-		display: grid;
-		grid-template-columns: repeat(10, 1fr);
-		& > * {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			aspect-ratio: 1/1;
-		}
-	}
-
-	& > *:nth-child(2) {
-		grid-row: 2;
-		& > * {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			aspect-ratio: 1/1;
-		}
-	}
-
-}
-
-
 
 .field {
 	display: grid;
-	grid-template-columns: repeat(10, 1fr);
+	grid-template-columns: 1fr 10fr;
+	grid-template-rows: 1fr 10fr;
+	aspect-ratio: 1/1;
+}
 
-	touch-action: none;
-
-	// 
-
+.field > * > * {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	aspect-ratio: 1/1;
 	position: relative;
+	align-content: center;
+}
 
-
-	&::before {
-		content: '';
-		top: 0px;
-		left: 0px;
-		right: 0px;
-		bottom: 0px;
-		position: absolute;
-		border: 4px solid blue;
-		border-radius: 0px;
-	}
-
+.field > *:nth-child(1) {
+	display: grid;
+	grid-row: 2;
+	grid-column: 1;
+	grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+	container-type: size;
 	& > * {
-		// display: flex;
-		// align-items: center;
-		// justify-content: center;
-		// align-content: center;
-		// aspect-ratio: 1/1;
-		position: relative;
-		// &::before {
-		// 	content: '';
-		// 	top: 0px;
-		// 	left: 0px;
-		// 	right: 0px;
-		// 	bottom: 0px;
-		// 	position: absolute;
-		// 	// border: 1px solid red;
-		// }
+		font-size: 50cqw;
 	}
+}
 
-	// & > *:nth-child(-n+11):not(:first-child) {
-	// 	// border: 1px solid blue;
-	// 	border-bottom: 3px solid red;
-	// }
-
-	// & > *:nth-child(n+112) {
-	// 	border-bottom: 3px solid red;
-	// }
-
-	// & > *:nth-child(11n+1):not(:fis) {
-	// 	border-right: 3px solid red;
-	// }
-
-
-	// & > *:nth-child(n+12):not(:nth-child(11n+1)) {
-		
-	// 	&::before {
-	// 		content: '';
-	// 		top: 0px;
-	// 		left: 0px;
-	// 		right: 0px;
-	// 		bottom: 0px;
-	// 		position: absolute;
-	// 	}
+.field > *:nth-child(2) {
+	display: grid;
+	grid-column: 2;
+	grid-row: 1;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+	container-type: size;
+	& > * {
+		font-size: 50cqh;
+	}
+}
 
 
+.field > *:nth-child(3) {
+	display: grid;
+	grid-row: 2;
+	grid-column: 2;
+	aspect-ratio: 1/1;
+	background-color: white;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+	touch-action: none;
+	position: relative;
+	overflow: hidden;
 
 
-	// }
+	outline-style: solid;
+	outline-color: currentColor;
+	outline-width: 3px;
+	outline-offset: -3px;
 
+	
 
 	@mixin ship {
-		z-index: 1;
+		// z-index: 1;
 		top: 0px;
 		left: 0px;
 		bottom: 0px;
@@ -111,58 +68,63 @@
 		align-items: center;
 		justify-content: center;
 		&.hit::before { content: 'x'; }
-
+		border-radius: inherit;
 	}
 
 	.one {
 		@include ship;
-		border: 3px solid blue;
+		border: 3px solid currentColor;
 	}
 
 	.verStart {
 		@include ship;
-		border-left: 3px solid blue;
-		border-right: 3px solid blue;
-		border-top: 3px solid blue;
+		border-left: 3px solid currentColor;
+		border-right: 3px solid currentColor;
+		border-top: 3px solid currentColor;
 	}
 
 	.verEnd {
 		@include ship;
-		border-left: 3px solid blue;
-		border-right: 3px solid blue;
-		border-bottom: 3px solid blue;
+		border-left: 3px solid currentColor;
+		border-right: 3px solid currentColor;
+		border-bottom: 3px solid currentColor;
 	}
 
 	.horStart {
 		@include ship;
-		border-left: 3px solid blue;
-		border-bottom: 3px solid blue;
-		border-top: 3px solid blue;
+		border-left: 3px solid currentColor;
+		border-bottom: 3px solid currentColor;
+		border-top: 3px solid currentColor;
 	}
 
 	.horEnd {
 		@include ship;
-		border-top: 3px solid blue;
-		border-bottom: 3px solid blue;
-		border-right: 3px solid blue;
+		border-top: 3px solid currentColor;
+		border-bottom: 3px solid currentColor;
+		border-right: 3px solid currentColor;
 	}
 
 	.verCenter {
 		@include ship;
-		border-left: 3px solid blue;
-		border-right: 3px solid blue;
+		border-left: 3px solid currentColor;
+		border-right: 3px solid currentColor;
 	}
 
 
 	.horCenter {
 		@include ship;
-		border-top: 3px solid blue;
-		border-bottom: 3px solid blue;
-	}
-
-	&.enemy .ship:not(.hit) {
-		display: none;
+		border-top: 3px solid currentColor;
+		border-bottom: 3px solid currentColor;
 	}
 
 
 }
+
+.field:not(.enemy) {
+	pointer-events: none;
+}
+
+.field.enemy .ship:not(.hit) {
+	display: none;
+}
+
