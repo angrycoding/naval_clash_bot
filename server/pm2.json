@@ -1,0 +1,10 @@
+{
+	"apps" : [{
+		"time": true,
+		"name": "naval_clash_server",
+		"script": "./index.js",
+		"watch": false,
+		"kill_timeout": 30000,
+		"node_args": "--optimize_for_size --gc_interval=100"
+	}]
+}

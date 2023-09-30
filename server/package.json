@@ -1,13 +1,20 @@
 {
  "scripts": {
   "start": "nodemon",
-  "build": "yarn tsc"
+  "build": "rm -rf dist && mkdir -p dist && yarn tsc && ./makeBundle.js"
  },
  "dependencies": {
-  "socket.io": "^4.7.2"
+  "request": "^2.88.2",
+  "socket.io": "^4.7.2",
+  "sqlite3": "^5.1.6"
  },
  "devDependencies": {
+  "browserify": "^17.0.0",
+  "esmify": "^2.1.1",
+  "fs-extra": "^11.1.1",
   "nodemon": "^3.0.1",
-  "typescript": "^5.2.2"
+  "recursive-readdir": "^2.2.3",
+  "typescript": "^5.2.2",
+  "uglify-es": "^3.3.9"
  }
 }
