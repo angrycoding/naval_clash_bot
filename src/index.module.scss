@@ -4,12 +4,31 @@
 	color: #2204BF;
 	box-sizing: border-box;
 	font-weight: 600;
+	-webkit-tap-highlight-color: transparent;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 html {
 	font-family: 'Shantell Sans', cursive;
 }
 
+html, body {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	padding: 0px;
+	margin: 0px;
+	bottom: 0px;
+	height: var(--tg-viewport-height, 100%);
+}
+
 :export {
-	gridColor: rgba(#2204BF, 0.4);
+	smallGridColor: rgba(gray, 0.2);
+	gridColor: rgba(#2204BF, 0.5);
 }

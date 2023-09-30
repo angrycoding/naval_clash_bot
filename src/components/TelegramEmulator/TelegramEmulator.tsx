@@ -50,6 +50,7 @@ const TelegramEmulator = (isProduction ? (props: Props) => props.children : clas
 	render() {
 
 		const backButtonVisible = Telegram?.WebApp?.BackButton?.isVisible;
+		
 
 		return <div className={styles.wrapper}>
 

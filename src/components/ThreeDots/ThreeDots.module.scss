@@ -1,0 +1,30 @@
+// @keyframes dots-1 { 0% { opacity: 0; } 50% { opacity: 1; } 65% { opacity: 1; } }
+// @keyframes dots-2 { 10% { opacity: 0; } 50% { opacity: 1; } 65% { opacity: 1; } }
+// @keyframes dots-3 { 20% { opacity: 0; } 50% { opacity: 1; } 65% { opacity: 1; } }
+
+
+@keyframes dots-1 { 35% { opacity: 0} 60% { opacity: 1; } }
+@keyframes dots-2 { 35% { opacity: 0} 85% { opacity: 1; } }
+@keyframes dots-3 { 35% { opacity: 0} 100% { opacity: 1; } }
+
+.wrapper {
+
+	& > *:nth-child(n+2) {
+		// opacity: 0;
+		animation-duration: 2s;
+		animation-iteration-count: infinite;
+		animation-delay: calc(var(--animation-delay) * 1ms);
+	}
+
+	& > *:nth-child(2) {
+		animation-name: dots-1;
+	}
+
+	& > *:nth-child(3) {
+		animation-name: dots-2;
+	}
+
+	& > *:nth-child(4) {
+		animation-name: dots-3;
+	}
+}

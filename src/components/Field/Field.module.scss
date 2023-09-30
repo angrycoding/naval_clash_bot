@@ -1,18 +1,38 @@
+$borderSize: 3px;
+$borderRadius: 4px;
+
+@mixin absolute($offset: 0) {
+	top: $offset;
+	left: $offset;
+	right: $offset;
+	bottom: $offset;
+	position: absolute;
+}
+
+@mixin ship($top, $left, $right, $bottom, $tlr, $trr, $blr, $brr) {
+	&::after {
+		content: '';
+		@include absolute;
+		border-top-left-radius: ($tlr * $borderRadius);
+		border-top-right-radius: ($trr * $borderRadius);
+		border-bottom-left-radius: ($blr * $borderRadius);
+		border-bottom-right-radius: ($brr * $borderRadius);
+		border-top: ($top * $borderSize) solid currentColor;
+		border-left: ($left * $borderSize) solid currentColor;
+		border-right: ($right * $borderSize) solid currentColor;
+		border-bottom: ($bottom * $borderSize) solid currentColor;
+	}
+}
 
 .field {
 	display: grid;
 	grid-template-columns: 1fr 10fr;
 	grid-template-rows: 1fr 10fr;
 	aspect-ratio: 1/1;
-}
-
-.field > * > * {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	aspect-ratio: 1/1;
-	position: relative;
-	align-content: center;
+	& > * > * {
+		aspect-ratio: 1/1;
+		position: relative;
+	}
 }
 
 .field > *:nth-child(1) {
@@ -23,6 +43,10 @@
 	container-type: size;
 	& > * {
 		font-size: 50cqw;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		padding-right: 15cqw;
 	}
 }
 
@@ -34,9 +58,13 @@
 	container-type: size;
 	& > * {
 		font-size: 50cqh;
+		display: flex;
+		line-height: 50cqh;
+		align-items: flex-end;
+		justify-content: center;
+		padding-bottom: 15cqh;
 	}
 }
-
 
 .field > *:nth-child(3) {
 	display: grid;
@@ -48,83 +76,97 @@
 	touch-action: none;
 	position: relative;
 	overflow: hidden;
-
-
-	outline-style: solid;
-	outline-color: currentColor;
-	outline-width: 3px;
-	outline-offset: -3px;
-
-	
-
-	@mixin ship {
-		// z-index: 1;
-		top: 0px;
-		left: 0px;
-		bottom: 0px;
-		right: 0px;
+	border-radius: $borderRadius;
+	&::before {
+		content: '';
+		@include absolute;
+		border-radius: $borderRadius;
+		border: $borderSize solid currentColor;
+	}
+	.status {
+		z-index: 1;
+		@include absolute($borderSize);
+		backdrop-filter: blur(1px);
+		background-color: rgba(black, 0.1);
 		display: flex;
-		position: absolute;
 		align-items: center;
 		justify-content: center;
-		&.hit::before { content: 'x'; }
-		border-radius: inherit;
+		container-type: size;
+		& > * {
+			// border: $borderSize solid currentColor;
+			position: relative;
+			// background-color: rgba(white, 0.9);
+			// border-radius: 8px;
+			// padding: 2%;
+			max-width: 80%;
+			text-align: center;
+			font-size: 5cqw;
+		}
 	}
-
-	.one {
-		@include ship;
-		border: 3px solid currentColor;
-	}
-
-	.verStart {
-		@include ship;
-		border-left: 3px solid currentColor;
-		border-right: 3px solid currentColor;
-		border-top: 3px solid currentColor;
-	}
-
-	.verEnd {
-		@include ship;
-		border-left: 3px solid currentColor;
-		border-right: 3px solid currentColor;
-		border-bottom: 3px solid currentColor;
-	}
-
-	.horStart {
-		@include ship;
-		border-left: 3px solid currentColor;
-		border-bottom: 3px solid currentColor;
-		border-top: 3px solid currentColor;
-	}
-
-	.horEnd {
-		@include ship;
-		border-top: 3px solid currentColor;
-		border-bottom: 3px solid currentColor;
-		border-right: 3px solid currentColor;
-	}
-
-	.verCenter {
-		@include ship;
-		border-left: 3px solid currentColor;
-		border-right: 3px solid currentColor;
-	}
-
-
-	.horCenter {
-		@include ship;
-		border-top: 3px solid currentColor;
-		border-bottom: 3px solid currentColor;
-	}
-
-
 }
+
+
+
+
 
 .field:not(.enemy) {
 	pointer-events: none;
 }
 
 .field.enemy .ship:not(.hit) {
-	display: none;
+	opacity: 0;
 }
 
+
+
+
+
+
+.ship.one {
+	@include ship(1, 1, 1, 1, 1, 1, 1, 1);
+}
+
+.ship.verStart {
+	@include ship(1, 1, 1, 0, 1, 1, 0, 0);
+}
+
+.ship.verEnd {
+	@include ship(0, 1, 1, 1, 0, 0, 1, 1);
+}
+
+.ship.horStart {
+	@include ship(1, 1, 0, 1, 1, 0, 1, 0);
+}
+
+.ship.horEnd {
+	@include ship(1, 0, 1, 1, 0, 1, 0, 1);
+}
+
+.ship.verCenter {
+	@include ship(0, 1, 1, 0, 0, 0, 0, 0);
+}
+
+.ship.horCenter {
+	@include ship(1, 0, 0, 1, 0, 0, 0, 0);
+}
+
+
+.ship.hit > * {
+	@include absolute;
+	mask-image: var(--maskImage);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: var(--maskSize);
+	background-color: currentColor;
+	transform-origin: 50% 50%;
+}
+
+.sea > * {
+	@include absolute;
+	mask-image: var(--maskImage);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: var(--maskSize);
+	background-color: currentColor;
+	transform-origin: 50% 50%;
+}

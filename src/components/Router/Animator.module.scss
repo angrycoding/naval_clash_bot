@@ -59,9 +59,10 @@
 }
 
 .wrapper {
-	::-webkit-scrollbar {
-		display: none;
-	}
+	overflow: hidden;
+	// ::-webkit-scrollbar {
+	// 	display: none;
+	// }
 }
 
 .wrapper, .wrapper > * {

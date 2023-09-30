@@ -1,5 +1,5 @@
 .wrapper {
-	position: fixed;
+	position: absolute;
 	top: 0px;
 	left: 0px;
 	right: 0px;
@@ -22,6 +22,8 @@
 		font-weight: 500;
 		flex: 1;
 		color: white !important;
+		white-space: nowrap;
+		overflow: hidden;
 	}
 
 	& > *:first-child,
@@ -50,7 +52,7 @@
 	justify-content: center;
 	align-items: center;
 	gap: 10vw;
-	font-size: 5vw;
+	font-size: 5vmin;
 	& > * {
 		width: 50px;
 		aspect-ratio: 1/1;

@@ -33,18 +33,25 @@ class Router extends React.Component<RouterProps> {
 
 	private history: string[] = [];
 	static Route = Route;
-
+	static instance: Router | null;
 	private animator: React.RefObject<Animator> = React.createRef();
 
-	static go(path: string) {
-		const anchor = document.createElement('div');
-		anchor.setAttribute('data-href', cleanupUrl(path));
-		const evObj = new MouseEvent('click');
-		Object.defineProperty(evObj, 'target', {value: anchor, enumerable: true});
-		document.dispatchEvent(evObj);
+	static go(path: string, props?: {[key: string]: any}) {
+		const { instance } = Router;
+		if (!instance) return;
+
+		const newUrl = uri_resolve(path, instance.history[instance.history.length - 1]);
+		instance.goForward(cleanupUrl(newUrl), props);
+
+		// const anchor = document.createElement('div');
+		// anchor.setAttribute('data-href', cleanupUrl(path));
+		// const evObj = new MouseEvent('click');
+		// Object.defineProperty(evObj, 'target', {value: anchor, enumerable: true});
+		// document.dispatchEvent(evObj);
 	}
 
 	componentDidMount(): void {
+		Router.instance = this;
 		document.addEventListener('click', this.onAnchorClick);
 		Telegram.WebApp.BackButton.onClick(this.onBackButton);
 		const animator = (this.animator.current);
@@ -57,6 +64,7 @@ class Router extends React.Component<RouterProps> {
 	}
 	
 	componentWillUnmount() {
+		Router.instance = null;
 		Telegram.WebApp.BackButton.offClick(this.onBackButton);
 		document.removeEventListener('click', this.onAnchorClick);
 	}
@@ -69,14 +77,17 @@ class Router extends React.Component<RouterProps> {
 		}
 	}
 
-	private getComponent = (path: string): any => {
+	private getComponent = (path: string): typeof Animator.Component => {
 		const cleanUrl = cleanupUrl(path);
 		const children: unknown[] = React.Children.toArray(this.props.children);
 		for (let c = 0; c < children.length; c++) {
 			const route = children[c] as Route;
 			const routePath = cleanupUrl(route.props.path);
 			if (routePath !== cleanUrl) continue;
-			return route.props.component;
+			return {
+				component: route.props.component,
+				props: {}
+			};
 		}
 	}
 
@@ -92,11 +103,11 @@ class Router extends React.Component<RouterProps> {
 		this.goForward(cleanupUrl(newUrl));
 	}
 
-	private goForward = (path: string) => {
+	private goForward = (path: string, props?: {[key: string]: any}) => {
 		const animator = (this.animator.current);
 		if (!animator || animator.isLoading) return;
 		const loadComponent = this.getComponent(path);
-		animator.load(loadComponent, Transition.SLIDE_TO_LEFT_OPACITY, error => {
+		animator.load({ ...loadComponent, props }, Transition.SLIDE_TO_LEFT_OPACITY, error => {
 			this.history.push(cleanupUrl(path));
 			this.updateBackButtonVisibility();
 		})

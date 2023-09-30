@@ -1,36 +1,75 @@
-import React, { CSSProperties } from 'react';
+import React from 'react';
 import Field from '../Field/Field';
 import styles from './Battle.module.scss';
-import clsx from 'clsx';
+import ThreeDots from '../ThreeDots/ThreeDots';
 import Border from '../Border/Border';
-import Button from '../Button/Button';
-import Modal from '../Modal/Modal';
-import theme from '../../index.module.scss';
+import Socket from '../../utils/Socket';
+import index2xy from '../../utils/index2xy';
+import Map from '../../types/Map';
+
 
 interface State {
-	ready: boolean;
+	isMyTurn?: boolean,
 }
 
+class Battle extends React.Component<{
+	enemyId: string,
+	isMyTurn: boolean,
+	myMap: Map,
+	enemyMap: Map
+}, State> {
 
-
-class Battle extends React.Component<{}, State> {
+	myfield: React.RefObject<Field> = React.createRef();
+	enemyfield: React.RefObject<Field> = React.createRef();
 
 	state: State = {
-		ready: false
+		isMyTurn: this.props.isMyTurn
 	}
 
-	field: React.RefObject<Field> = React.createRef();
-
-	placeShips = () => {
-		this.field.current?.randomize();
+	onEnemyHit = (index: number) => {
+		if (this.state.isMyTurn) return;
+		console.info('onEnemyHit', index2xy(index));
+		this.myfield.current?.makeShot(index);
 	}
 
-	ready = () => {
-		this.setState({ ready: true });
+	componentDidMount = () => {
+		this.myfield.current?.set(this.props.myMap);
+		this.enemyfield.current?.set(this.props.enemyMap);
+		Socket.on('shot', this.onEnemyHit);
+	}
+
+	componentWillUnmount = () => {
+		Socket.off('shot', this.onEnemyHit);
+	}
+
+	onEnemyTurn = (changeSide: boolean, allDead: boolean) => {
+
+		if (allDead) {
+			console.info("MY LOOSE");
+		}
+
+		else if (changeSide) {
+			this.setState({ isMyTurn: true });
+		}
+	}
+
+	onMyTurn = (changeSide: boolean, allDead: boolean, index: number) => {
+
+		Socket.emit('shot', this.props.enemyId, index);
+
+		if (allDead) {
+			console.info('MY WON')
+		}
+
+		else if (changeSide) {
+			this.setState({ isMyTurn: false });
+		}
 	}
 
 	render() {
-		const { ready } = this.state;
+
+		const { isMyTurn } = this.state;
+
 		return (
 			<div className={styles.outerWrapper}>
 				<div className={styles.fields}>
@@ -38,10 +77,47 @@ class Battle extends React.Component<{}, State> {
 					<div className={styles.wrapper}>
 					
 						<div className={styles.col}>
-							<Field />
+							<Field
+								ref={this.myfield}
+								onTurn={this.onEnemyTurn}
+								status={
+									
+									isMyTurn ? (
+										<Border>
+											<div style={{padding: 20}}>
+												<ThreeDots>
+													ВАШ ХОД
+												</ThreeDots>
+											</div>
+										</Border>
+									)
+
+									: undefined
+
+								}
+							/>
 						</div>
 						<div className={styles.col}>
-							<Field enemy={true} />
+							<Field
+								ref={this.enemyfield}
+								enemy={true}
+								onTurn={this.onMyTurn}
+								status={
+
+									!isMyTurn ? (
+										<Border>
+											<div style={{padding: 20}}>
+												<ThreeDots>
+													ХОД ПРОТИВНИКА
+												</ThreeDots>
+											</div>
+										</Border>
+									)
+
+									: undefined
+
+								}
+							/>
 						</div>
 					</div>
 				</div>

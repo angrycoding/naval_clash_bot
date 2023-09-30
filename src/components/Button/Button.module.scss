@@ -1,9 +1,13 @@
+.outer {
+	cursor: pointer;
+}
+
 .disabled {
 	opacity: 0.7;
 	pointer-events: none;
 }
 
-.wrapper {
+.inner {
 	padding: 16px;
 	text-align: center;
 }

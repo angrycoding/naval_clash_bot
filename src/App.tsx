@@ -1,9 +1,4 @@
 import React from 'react';
-import Field from './components/Field/Field';
-import { DataConnection, Peer } from "peerjs";
-import share from './utils/share';
-
-import { io as SocketIO } from 'socket.io-client';
 import Home from './components/Home/Home';
 import PlaceShips from './components/PlaceShips/PlaceShips';
 import Router from './components/Router/Router';
@@ -11,13 +6,6 @@ import theme from './index.module.scss';
 import Battle from './components/Battle/Battle';
 
 
-const socketIO = SocketIO('http://localhost:3001', {
-	autoConnect: false
-});
-
-
-
-// const search = new URLSearchParams(window.location.search);
 
 // @ts-ignore
 const isInTelegram = Boolean(typeof window?.Telegram?.WebApp?.initDataUnsafe?.user === 'object')
@@ -65,8 +53,8 @@ const cellSize = 16;
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
 	<defs>
 		<pattern id="pattern_KJHz" patternUnits="userSpaceOnUse" width="${cellSize}" height="${cellSize}" patternTransform="rotate(0)">
-			<line x1="0" y="0" x2="0" y2="${cellSize}" stroke="${theme.gridColor}" stroke-width="1" />
-			<line x1="0" y="0" x2="${cellSize}" y2="0" stroke="${theme.gridColor}" stroke-width="1" />
+			<line x1="0" y="0" x2="0" y2="${cellSize}" stroke="${theme.smallGridColor}" stroke-width="1" />
+			<line x1="0" y="0" x2="${cellSize}" y2="0" stroke="${theme.smallGridColor}" stroke-width="1" />
 		</pattern>
 	</defs>
 	<rect width="100%" height="100%" fill="url(#pattern_KJHz)" />
@@ -82,11 +70,11 @@ class App extends React.Component<{}, State> {
 	}
 
 	sendHandShake = () => {
-		socketIO.emit('handshake', "I AM USER BLABLA")
+		// socketIO.emit('handshake', "I AM USER BLABLA")
 	}
 
 	updateConnectionState = () => {
-		this.setState({ isConnected: socketIO.connected })
+		// this.setState({ isConnected: socketIO.connected })
 	}
 
 	onUpdateUserList = (userList: any) => {
@@ -94,15 +82,15 @@ class App extends React.Component<{}, State> {
 	}
 
 	componentDidMount = async() => {
-		socketIO.on('connect', this.updateConnectionState);
-		socketIO.on('disconnect', this.updateConnectionState);
-		socketIO.on('connect', this.sendHandShake);
-		socketIO.on('userlist', this.onUpdateUserList);
+		// socketIO.on('connect', this.updateConnectionState);
+		// socketIO.on('disconnect', this.updateConnectionState);
+		// socketIO.on('connect', this.sendHandShake);
+		// socketIO.on('userlist', this.onUpdateUserList);
 	}
 
 	componentWillUnmount = () => {
-		socketIO.removeAllListeners();
-		socketIO.disconnect();
+		// socketIO.removeAllListeners();
+		// socketIO.disconnect();
 	}
 
 	render() {
@@ -112,9 +100,10 @@ class App extends React.Component<{}, State> {
 				backgroundColor: 'white',
 				backgroundPosition: 'center',
 				backgroundImage: `url("data:image/svg+xml;base64,${window.btoa(svg)}")`
-				}}>
+			}}>
 				
-
+				
+				<Router.Route path="/" component={PlaceShips} />
 				<Router.Route path="/" component={Home} />
 				<Router.Route path="/placeShips" component={PlaceShips} />
 				<Router.Route path="/battle" component={Battle} />
