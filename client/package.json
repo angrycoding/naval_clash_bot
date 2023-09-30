@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "BROWSER=none DISABLE_ESLINT_PLUGIN=true BROWSER=none react-app-rewired start",
-    "build": "react-app-rewired build"
+    "build": "BUILD_PATH=./dist react-app-rewired build"
   },
   "browserslist": {
     "production": [

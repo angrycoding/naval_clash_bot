@@ -1,39 +1,56 @@
-import { Server, Socket } from 'socket.io';
+import { Server } from 'socket.io';
 
-const socketIO = new Server({
-	path: '/api/',
+import ServerToClientEvents from '../../client/src/types/ServerToClientEvents';
+import ClientToServerEvents from '../../client/src/types/ClientToServerEvents';
+import Map from '../../client/src/types/Map';
+import Settings from '../../client/src/Settings';
+
+
+interface SocketData {
+	map: Map;
+	userId: string;
+}
+
+const socketIO = new Server<ClientToServerEvents, ServerToClientEvents, {}, SocketData>({
+	path: Settings.socketPath,
 	cors: {
 		origin: "*",
 		methods: ["GET", "POST"]
 	}
 });
 
-socketIO.on('connection', (socket: Socket) => {
 
-	socket.on('setMap', async(map, userid) => {
-		// @ts-ignore
-		socket.map = map;
-		// @ts-ignore
-		socket.userid = userid;
+socketIO.on('connection', (socket) => {
+	
+	socket.on('setMap', async(map: Map, userId: string) => {
 
-		console.info('setMap', userid)
+		if (!map || !userId) return;
 
-		const readyToBattle = [];
+		socket.data.map = map;
+		socket.data.userId = userId;
+		
 		const all = await socketIO.fetchSockets();
+		const readyToBattle: typeof all = [];
 
 		for (const socket of all) {
-			// @ts-ignore
-			if (!socket.map) continue;
+			
+			if (!socket.data.map) continue;
+			if (!socket.data.userId) continue;
+
 			readyToBattle.push(socket);
+
 			if (readyToBattle.length === 2) {
-				readyToBattle[0].emit('battle', readyToBattle[1].id, readyToBattle[1].map, true);
-				readyToBattle[1].emit('battle', readyToBattle[0].id, readyToBattle[0].map, false);
-				delete readyToBattle[0].map;
-				delete readyToBattle[1].map;
+				readyToBattle[0].emit('battle', readyToBattle[1].id, readyToBattle[1].data.map, true);
+				readyToBattle[1].emit('battle', readyToBattle[0].id, readyToBattle[0].data.map, false);
+				delete readyToBattle[0].data.map;
+				delete readyToBattle[1].data.map;
 				readyToBattle.splice(0, Infinity);
 			}
+
 		}
-	})
+
+
+	});
 
 	socket.on('shot', async(toId: string, index: number) => {
 		console.info('SERVER RECEIVED SHOT', socket.id, '->', toId, index)

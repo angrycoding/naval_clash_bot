@@ -1,5 +1,8 @@
-import { io as SocketIO } from 'socket.io-client';
+import { Socket, io } from 'socket.io-client';
 import getUserId from './getUserId';
+import ServerToClientEvents from '../types/ServerToClientEvents';
+import ClientToServerEvents from '../types/ClientToServerEvents';
+import Settings from '../Settings';
 
 declare const isProduction: boolean;
 
@@ -7,8 +10,8 @@ declare const isProduction: boolean;
 // 	userid: getUserId()
 // }
 
-const socketIO = SocketIO('https://new.videotam.ru', {
-	path: '/api/',
+const socketIO: Socket<ServerToClientEvents, ClientToServerEvents> = io('https://new.videotam.ru', {
+	path: Settings.socketPath,
 	autoConnect: true,
 	// auth
 });

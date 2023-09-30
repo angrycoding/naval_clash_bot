@@ -7,8 +7,8 @@ import Button from '../Button/Button';
 import Modal from '../Modal/Modal';
 import Router from '../Router/Router';
 import Socket from '../../utils/Socket';
-import Map from '../../types/Map';
 import getUserId from '../../utils/getUserId';
+import Map from '../../types/Map';
 
 interface State {
 	ready: boolean;
@@ -35,7 +35,7 @@ class PlaceShips extends React.Component<{}, State> {
 	}
 
 	componentDidMount = () => {
-		Socket.emit('inviteUserToPlay', 311775037);
+		// Socket.emit('inviteUserToPlay', 311775037);
 	}
 
 
@@ -48,9 +48,11 @@ class PlaceShips extends React.Component<{}, State> {
 	}
 
 	ready = () => {
+		const map = this.field.current?.get();
+		if (!map) return;
 		this.setState({ ready: true }, () => {
 			Socket.once('battle', this.startBattle);
-			Socket.emit('setMap', this.field.current?.get(), getUserId());
+			Socket.emit('setMap', map, getUserId());
 		});
 	}
 
