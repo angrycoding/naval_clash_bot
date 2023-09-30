@@ -1,15 +1,16 @@
 #!/bin/bash
 
 cd ./server
-npm run build
+yarn build
 
 cd ../client
-npm run build
+yarn build
 
 cd ..
 
 rm -rf ./dist
 mkdir dist
+mkdir dist/static
 
 cp -r ./server/dist/* ./dist
-cp -r ./client/dist/* ./dist
+cp -r ./client/dist/* ./dist/static
