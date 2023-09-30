@@ -1,0 +1,7 @@
+{
+	"watch": ["*.*"],
+	"exec": "npx ts-node ./src/index.ts",
+	"verbose": true,
+	"ext": "ts tsx"
+  }
+  
