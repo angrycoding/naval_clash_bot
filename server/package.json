@@ -7,11 +7,7 @@
   "socket.io": "^4.7.2"
  },
  "devDependencies": {
-  "browserify": "^17.0.0",
-  "esmify": "^2.1.1",
   "nodemon": "^3.0.1",
-  "recursive-readdir": "^2.2.3",
-  "typescript": "^5.2.2",
-  "uglify-es": "^3.3.9"
+  "typescript": "^5.2.2"
  }
 }
