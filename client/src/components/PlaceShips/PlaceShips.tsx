@@ -1,5 +1,4 @@
 import React from 'react';
-import Field from '../Field/Field';
 import styles from './PlaceShips.module.scss';
 import clsx from 'clsx';
 import Border from '../Border/Border';
@@ -9,6 +8,8 @@ import Router from '../Router/Router';
 import Socket from '../../utils/Socket';
 import getUserId from '../../utils/getUserId';
 import Map from '../../types/Map';
+import Field2 from '../Field2/Field2';
+import ThreeDots from '../ThreeDots/ThreeDots';
 
 interface State {
 	ready: boolean;
@@ -20,7 +21,7 @@ class PlaceShips extends React.Component<{}, State> {
 		ready: false
 	}
 
-	field: React.RefObject<Field> = React.createRef();
+	field: React.RefObject<Field2> = React.createRef();
 
 	startBattle = (enemyId: string, enemyMap: Map, isMyTurn: boolean) => {
 		console.info('enemyId', enemyId)
@@ -58,18 +59,18 @@ class PlaceShips extends React.Component<{}, State> {
 
 	render() {
 		const { ready } = this.state;
-		return <div className={styles.wrapper}>
+		return <div className={clsx(styles.wrapper, ready && styles.ready)}>
 
 			<div className={styles.fieldWrapper}>
-				<Field ref={this.field} className={styles.field} />
+				<Field2 ref={this.field} />
 			</div>
 
 			<div className={styles.buttons}>
 				<Button onClick={this.ready} disabled={ready}>
-					I AM READY
+					{ready ? <ThreeDots>Ждём оппонента</ThreeDots> : 'я готов к игре'}
 				</Button>
 				<Button onClick={this.placeShips} disabled={ready}>
-					CHANGE LAYOUT
+					переставить
 				</Button>
 			</div>
 			

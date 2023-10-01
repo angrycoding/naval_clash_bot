@@ -36,6 +36,12 @@ class Router extends React.Component<RouterProps> {
 	static instance: Router | null;
 	private animator: React.RefObject<Animator> = React.createRef();
 
+	static goBack() {
+		const { instance } = Router;
+		if (!instance) return;
+		instance.goBackward();
+	}
+
 	static go(path: string, props?: {[key: string]: any}) {
 		const { instance } = Router;
 		if (!instance) return;

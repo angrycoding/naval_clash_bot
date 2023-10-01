@@ -1,0 +1,214 @@
+
+$padding: 3px;
+$letterSize: 1.5ch;
+$borderSize: 3px;
+$gridBorderRadius: 6px;
+$shipBorderRadius: 3px;
+
+.field {
+	max-width: 100cqmin;
+	min-width: 100cqmin;
+	min-height: 100cqmin;
+	max-height: 100cqmin;
+	
+	font-size: 4cqmin;
+	display: flex;
+	flex-direction: column;
+	gap: $padding;
+}
+
+.innerWrapper {
+	display: flex;
+}
+
+
+.letters {
+	display: flex;
+	margin-left: calc($letterSize + $padding);
+	& > * {
+		flex: 1;
+		max-height: $letterSize;
+		min-height: $letterSize;
+		text-align: center;
+	}
+}
+
+
+.digits {
+	display: flex;
+	flex-direction: column;
+	margin-right: $padding;
+	& > * {
+		flex: 1;
+		max-width: $letterSize;
+		min-width: $letterSize;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+	}
+}
+
+
+.grid {
+	aspect-ratio: 1/1;
+	flex: 1;
+	display: flex;
+	flex-wrap: wrap;
+	background-color: white;
+	position: relative;
+	overflow: hidden;
+	border-radius: $gridBorderRadius;
+
+	&::before {
+		content: '';
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		right: 0px;
+		bottom: 0px;
+		pointer-events: none;
+		border-radius: inherit;
+		border: $borderSize solid currentColor;
+	}
+
+	& > * {
+		min-width: 10%;
+		max-width: 10%;
+		min-height: 10%;
+		max-height: 10%;
+		position: relative;
+	}
+}
+
+.field.disabled .grid::after {
+	content: '';
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	pointer-events: none;
+	background-color: rgba(red, 0.05);
+}
+
+.status {
+	pointer-events: all;
+	position: absolute;
+	min-width: 100%;
+	min-height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: rgba(white, 0.8);
+	border-radius: $gridBorderRadius;
+	border: $borderSize solid currentColor;
+}
+
+
+@media screen and (orientation:landscape) {
+	.field.enemy {
+		transform: scaleX(-1);
+		.letters, .grid, .digits {
+			transform: scaleX(-1);
+		}
+		.digits > * {
+			justify-content: flex-start;
+		}
+	}
+}
+
+
+@media screen and (orientation:portrait) {
+	.field.enemy {
+		transform: scaleY(-1);
+		.letters, .grid, .digits {
+			transform: scaleY(-1);
+		}
+	}
+}
+
+
+
+
+.field.gameOver,
+.field:not(.enemy) {
+	pointer-events: none;
+}
+
+.field.enemy:not(.gameOver) .ship:not(.hit) {
+	opacity: 0;
+}
+
+
+@mixin absolute($offset: 0) {
+	top: $offset;
+	left: $offset;
+	right: $offset;
+	bottom: $offset;
+	position: absolute;
+}
+
+@mixin ship($top, $left, $right, $bottom, $tlr, $trr, $blr, $brr) {
+	&::after {
+		content: '';
+		@include absolute;
+		border-top-left-radius: ($tlr * $shipBorderRadius);
+		border-top-right-radius: ($trr * $shipBorderRadius);
+		border-bottom-left-radius: ($blr * $shipBorderRadius);
+		border-bottom-right-radius: ($brr * $shipBorderRadius);
+		border-top: ($top * $borderSize) solid currentColor;
+		border-left: ($left * $borderSize) solid currentColor;
+		border-right: ($right * $borderSize) solid currentColor;
+		border-bottom: ($bottom * $borderSize) solid currentColor;
+	}
+}
+
+
+.ship.one {
+	@include ship(1, 1, 1, 1, 1, 1, 1, 1);
+}
+
+.ship.verStart {
+	@include ship(1, 1, 1, 0, 1, 1, 0, 0);
+}
+
+.ship.verEnd {
+	@include ship(0, 1, 1, 1, 0, 0, 1, 1);
+}
+
+.ship.horStart {
+	@include ship(1, 1, 0, 1, 1, 0, 1, 0);
+}
+
+.ship.horEnd {
+	@include ship(1, 0, 1, 1, 0, 1, 0, 1);
+}
+
+.ship.verCenter {
+	@include ship(0, 1, 1, 0, 0, 0, 0, 0);
+}
+
+.ship.horCenter {
+	@include ship(1, 0, 0, 1, 0, 0, 0, 0);
+}
+
+
+.ship.hit > * {
+	@include absolute;
+	mask-image: var(--maskImage);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: var(--maskSize);
+	background-color: currentColor;
+	transform-origin: 50% 50%;
+}
+
+.sea > * {
+	@include absolute;
+	mask-image: var(--maskImage);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: var(--maskSize);
+	background-color: currentColor;
+	transform-origin: 50% 50%;
+}

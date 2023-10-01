@@ -69,30 +69,6 @@ class App extends React.Component<{}, State> {
 		view: 'users'
 	}
 
-	sendHandShake = () => {
-		// socketIO.emit('handshake', "I AM USER BLABLA")
-	}
-
-	updateConnectionState = () => {
-		// this.setState({ isConnected: socketIO.connected })
-	}
-
-	onUpdateUserList = (userList: any) => {
-		console.info('userList', userList);
-	}
-
-	componentDidMount = async() => {
-		// socketIO.on('connect', this.updateConnectionState);
-		// socketIO.on('disconnect', this.updateConnectionState);
-		// socketIO.on('connect', this.sendHandShake);
-		// socketIO.on('userlist', this.onUpdateUserList);
-	}
-
-	componentWillUnmount = () => {
-		// socketIO.removeAllListeners();
-		// socketIO.disconnect();
-	}
-
 	render() {
 
 		return (
@@ -104,35 +80,10 @@ class App extends React.Component<{}, State> {
 				
 				
 				<Router.Route path="/" component={PlaceShips} />
-				<Router.Route path="/" component={Home} />
 				<Router.Route path="/placeShips" component={PlaceShips} />
 				<Router.Route path="/battle" component={Battle} />
 			</Router> 
 		)
-
-
-		// const { isConnected, view } = this.state;
-
-
-		// if (1) return <PlaceShips />
-
-		// // if (view === 'users') {
-		// // 	return <UserList />
-		// // }
-
-
-
-		// // при выстреле по вражескому полю, играем все звуки и визуализируем все это дело
-		// // и одновременно с этим отправляем на сервер наш выстрел
-
-		// return <div style={{position: 'fixed', top: 20, left: 20, right: 20, bottom: 20, display: 'flex', gap: 20, flexDirection: 'column'}}>
-
-		// 	<Field />
-
-		// 	<Field enemy={true} />
-
-
-		// </div>
 	}
 }
 

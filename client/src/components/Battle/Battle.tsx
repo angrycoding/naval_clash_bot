@@ -1,14 +1,16 @@
 import React from 'react';
-import Field from '../Field/Field';
+import clsx from 'clsx';
 import styles from './Battle.module.scss';
-import ThreeDots from '../ThreeDots/ThreeDots';
-import Border from '../Border/Border';
 import Socket from '../../utils/Socket';
-import index2xy from '../../utils/index2xy';
 import Map from '../../types/Map';
+import Field2 from '../Field2/Field2';
+import Button from '../Button/Button';
+import Router from '../Router/Router';
 
 
 interface State {
+	myWin?: boolean;
+	gameOver?: boolean;
 	isMyTurn?: boolean,
 }
 
@@ -19,16 +21,16 @@ class Battle extends React.Component<{
 	enemyMap: Map
 }, State> {
 
-	myfield: React.RefObject<Field> = React.createRef();
-	enemyfield: React.RefObject<Field> = React.createRef();
+	myfield: React.RefObject<Field2> = React.createRef();
+	enemyfield: React.RefObject<Field2> = React.createRef();
 
 	state: State = {
 		isMyTurn: this.props.isMyTurn
 	}
 
 	onEnemyHit = (index: number) => {
-		if (this.state.isMyTurn) return;
-		console.info('onEnemyHit', index2xy(index));
+		const { isMyTurn, gameOver } = this.state;
+		if (isMyTurn || gameOver) return;
 		this.myfield.current?.makeShot(index);
 	}
 
@@ -45,81 +47,80 @@ class Battle extends React.Component<{
 	onEnemyTurn = (changeSide: boolean, allDead: boolean) => {
 
 		if (allDead) {
-			console.info("MY LOOSE");
+			this.setState(state => ({
+				...state,
+				gameOver: true,
+				myWin: false
+			}))
 		}
 
 		else if (changeSide) {
-			this.setState({ isMyTurn: true });
+			this.setState(state => ({
+				...state,
+				isMyTurn: true
+			}));
 		}
 	}
 
 	onMyTurn = (changeSide: boolean, allDead: boolean, index: number) => {
 
-		Socket.emit('shot', this.props.enemyId, index);
-
 		if (allDead) {
-			console.info('MY WON')
+			this.setState(state => ({
+				...state,
+				myWin: true,
+				gameOver: true
+			}), () => {
+				Socket.emit('shot', this.props.enemyId, index);
+			})
+		} else if (changeSide) {
+			this.setState(state => ({
+				...state,
+				isMyTurn: false
+			}), () => {
+				Socket.emit('shot', this.props.enemyId, index);
+			});
+		} else {
+			Socket.emit('shot', this.props.enemyId, index);
 		}
 
-		else if (changeSide) {
-			this.setState({ isMyTurn: false });
-		}
+
 	}
 
 	render() {
 
-		const { isMyTurn } = this.state;
+		const { isMyTurn, gameOver, myWin } = this.state;
 
 		return (
-			<div className={styles.outerWrapper}>
-				<div className={styles.fields}>
+			<div className={clsx(styles.wrapper, isMyTurn ? styles.secondColActive : styles.firstColActive)}>
 
-					<div className={styles.wrapper}>
+				<div className={styles.firstColumn}>
+					<Field2
+						ref={this.myfield}
+						onTurn={this.onEnemyTurn}
+						disabled={isMyTurn}
+						status={(gameOver && !myWin) && <div style={{fontSize: '8cqmin', display: 'flex', flexDirection: 'column', alignContent: 'center', alignItems: 'center', gap: '8cqmin'}}>
+							<div>Вы проиграли :(</div>
+							<Button onClick={() => Router.goBack()}>Играть ещё?</Button>
+						</div>}
+					/>
+
+				</div>
+
+				<div className={styles.lastColumn}>
+
 					
-						<div className={styles.col}>
-							<Field
-								ref={this.myfield}
-								onTurn={this.onEnemyTurn}
-								status={
-									
-									isMyTurn ? (
-										<Border>
-											<div style={{padding: 20}}>
-												<ThreeDots>
-													ВАШ ХОД
-												</ThreeDots>
-											</div>
-										</Border>
-									)
+					<Field2
+						ref={this.enemyfield}
+						gameOver={gameOver}
+						enemy={true}
+						onTurn={this.onMyTurn}
+						disabled={!isMyTurn}
+						status={(gameOver && myWin) && <div style={{fontSize: '8cqmin', display: 'flex', flexDirection: 'column', alignContent: 'center', alignItems: 'center', gap: '8cqmin'}}>
+							<div>Вы выиграли!</div>
+							<Button onClick={() => Router.goBack()}>Играть ещё?</Button>
+						</div>}
+					/>
 
-									: undefined
-
-								}
-							/>
-						</div>
-						<div className={styles.col}>
-							<Field
-								ref={this.enemyfield}
-								enemy={true}
-								onTurn={this.onMyTurn}
-								status={
-
-									!isMyTurn ? (
-										<Border>
-											<div style={{padding: 20}}>
-												<ThreeDots>
-													ХОД ПРОТИВНИКА
-												</ThreeDots>
-											</div>
-										</Border>
-									)
-
-									: undefined
-
-								}
-							/>
-						</div>
-					</div>
 				</div>
 			</div>
 		);

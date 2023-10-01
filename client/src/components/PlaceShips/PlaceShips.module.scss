@@ -12,18 +12,15 @@
 .fieldWrapper {
 	flex: 1;
 	position: relative;
+	display: flex;
+	justify-content: center;
+	align-content: center;
+	container-type: size;
 }
 
-.field {
-	position: absolute;
-	top: 0px;
-	bottom: 0px;
-	left: 0px;
-	right: 0px;
-	max-height: 100%;
-	max-width: 100%;
+.ready .fieldWrapper {
+	opacity: 0.6;
 }
-
 
 .buttons {
 	gap: 20px;
@@ -45,6 +42,9 @@
 @media screen and (orientation:landscape) {
 	.wrapper {
 		flex-direction: row;
+	}
+	.fieldWrapper {
+		align-items: flex-end;
 	}
 	.buttons {
 		justify-content: flex-end;

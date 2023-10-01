@@ -1,102 +1,48 @@
-.outerWrapper {
-	--bordersize: 20px;
+.wrapper {
+	top: 10px;
+	left: 10px;
+	right: 10px;
+	bottom: 10px;
 	position: absolute;
-	top: 0px;
-	left: 0px;
-	bottom: 0px;
-	right: 0px;
 	display: flex;
-	padding: var(--bordersize);
+	gap: 5cqmin;
 }
 
-.fields {
-	position: relative;
+
+
+
+.firstColumn, .lastColumn {
+	container-type: size;
+	display: flex;
 	flex: 1;
 }
 
-@media screen and (orientation:portrait) {
-	.outerWrapper {
-		flex-direction: column;
-	}
-}
-
 @media screen and (orientation:landscape) {
-	.outerWrapper {
-		flex-direction: row;
-	}
-}
-
-.wrapper {
-	position: absolute;
-	top: 0px;
-	left: 0px;
-	bottom: 0px;
-	right: 0px;
-
-
-
-	display: flex;
-	flex-direction: column;
-	// gap: 50px;
-
-
-	
-}
-
-.col {
-	min-height: 50%;
-	min-width: 50%;
-	position: relative;
-}
-
-.col > * {
-	position: absolute;
-	top: 0px;
-	bottom: 0px;
-	left: 0px;
-	right: 0px;
-	max-height: 100%;
-	max-width: 100%;
-}
-
-@media screen and (orientation:portrait) {
-	.col:first-child {
-		// border-bottom: 0px;
-		border-bottom: calc(var(--bordersize) / 2) solid transparent;
-	}
-	.col:last-child {
-		border-top: calc(var(--bordersize) / 2) solid transparent;
-	}
-	.col > * {
-		margin-left: auto;
-		margin-right: auto;
-	}
-	.col:first-child > * {
-		top: auto;
-		bottom: 0px;
-	}
-}
-
-@media screen and (orientation:landscape) {
-	.col:first-child {
-		border-right: calc(var(--bordersize) / 2) solid transparent;
-	}
-	.col:last-child {
-		border-left: calc(var(--bordersize) / 2) solid transparent;
-	}
-	.col:first-child > * {
-		// right: 20px;
-		margin-left: auto;
-	}
-	.col:last-child > * {
-		// left: 20px;
-		margin-right: auto;
-	}
 	.wrapper {
 		flex-direction: row;
 	}
-	.col > * {
-		top: 50%;
-		transform: translateY(-50%);
+	.firstColumn {
+		justify-content: flex-end;
 	}
+	.firstColumn, .lastColumn {
+		align-items: center;
+	}
+}
+
+@media screen and (orientation:portrait) {
+	.wrapper {
+		flex-direction: column;
+	}
+	.firstColumn {
+		align-items: flex-end;
+	}
+	.firstColumn, .lastColumn {
+		justify-content: center;
+	}
+}
+
+
+.firstColActive .lastColumn,
+.secondColActive .firstColumn {
+	pointer-events: none;
 }
