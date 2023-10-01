@@ -15,13 +15,20 @@ import hit4 from './hit4.wav';
 
 import h1 from './h1.png';
 import h2 from './h2.png';
+import h3 from './h3.png';
+import h4 from './h4.png';
+
 import c1 from './c1.png';
 import c2 from './c2.png';
 import c3 from './c3.png';
+import c4 from './c4.png';
 
 import xy2index from '../../utils/xy2index';
 import index2xy from '../../utils/index2xy';
 import { playSound } from '../../utils/playSound';
+
+const CROSSES = [c1, c2, c3];
+const MISSES = [h1, h2];
 
 const allShipIds = [
 	1, 2, 3, 4,
@@ -99,8 +106,8 @@ const isHitShip = (entity: any): boolean => {
 const SeaCell = React.memo(() => (
 	<div style={{
 		// transform: `rotate(${getRandomInt(0, 3) * 90 + getRandomInt(-10, 10)}deg)`,
-		'--maskSize': `${getRandomInt(60, 80)}%`,
-		'--maskImage': `url("${[h1, h2][getRandomInt(0, 1)]}")`
+		'--maskSize': `${getRandomInt(80, 90)}%`,
+		'--maskImage': `url("${MISSES[getRandomInt(0, MISSES.length - 1)]}")`
 	} as CSSProperties} />
 ));
 
@@ -109,7 +116,7 @@ const CellHit = React.memo(() => (
 	<div style={{
 		transform: `rotate(${getRandomInt(0, 3) * 90 + getRandomInt(-10, 10)}deg)`,
 		'--maskSize': `${getRandomInt(60, 80)}%`,
-		'--maskImage': `url("${[c1, c2, c3][getRandomInt(0, 2)]}")`
+		'--maskImage': `url("${CROSSES[getRandomInt(0, CROSSES.length - 1)]}")`
 	} as CSSProperties} />
 ));
 

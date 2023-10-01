@@ -12,10 +12,10 @@ const isInTelegram = Boolean(typeof window?.Telegram?.WebApp?.initDataUnsafe?.us
 
 
 
-try {
-	// @ts-ignore
-	window?.Telegram?.WebApp?.requestWriteAccess?.();
-} catch (e) {}
+// try {
+// 	// @ts-ignore
+// 	window?.Telegram?.WebApp?.requestWriteAccess?.();
+// } catch (e) {}
 
 try {
 	// @ts-ignore
