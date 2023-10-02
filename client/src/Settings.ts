@@ -1,4 +1,5 @@
 const Settings = {
+	serverPort: 3495,
 	socketPath: '/api/'
 };
 

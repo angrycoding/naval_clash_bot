@@ -1,14 +1,11 @@
 import React from 'react';
 import styles from './PlaceShips.module.scss';
 import clsx from 'clsx';
-import Border from '../Border/Border';
 import Button from '../Button/Button';
-import Modal from '../Modal/Modal';
 import Router from '../Router/Router';
 import Socket from '../../utils/Socket';
-import getUserId from '../../utils/getUserId';
 import Map from '../../types/Map';
-import Field2 from '../Field2/Field2';
+import Field from '../Field/Field';
 import ThreeDots from '../ThreeDots/ThreeDots';
 
 interface State {
@@ -21,7 +18,7 @@ class PlaceShips extends React.Component<{}, State> {
 		ready: false
 	}
 
-	field: React.RefObject<Field2> = React.createRef();
+	field: React.RefObject<Field> = React.createRef();
 
 	startBattle = (enemyId: string, enemyMap: Map, isMyTurn: boolean) => {
 		console.info('enemyId', enemyId)
@@ -53,7 +50,7 @@ class PlaceShips extends React.Component<{}, State> {
 		if (!map) return;
 		this.setState({ ready: true }, () => {
 			Socket.once('battle', this.startBattle);
-			Socket.emit('setMap', map, getUserId());
+			Socket.emit('setMap', map);
 		});
 	}
 
@@ -62,7 +59,7 @@ class PlaceShips extends React.Component<{}, State> {
 		return <div className={clsx(styles.wrapper, ready && styles.ready)}>
 
 			<div className={styles.fieldWrapper}>
-				<Field2 ref={this.field} />
+				<Field ref={this.field} />
 			</div>
 
 			<div className={styles.buttons}>

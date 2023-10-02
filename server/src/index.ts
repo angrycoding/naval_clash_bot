@@ -1,10 +1,13 @@
 import { Server } from 'socket.io';
-
 import ServerToClientEvents from '../../client/src/types/ServerToClientEvents';
 import ClientToServerEvents from '../../client/src/types/ClientToServerEvents';
 import Map from '../../client/src/types/Map';
 import Settings from '../../client/src/Settings';
 
+
+const POSTPONED_SHOTS: {[userId: string]: number[]} = {
+	
+}
 
 interface SocketData {
 	map: Map;
@@ -20,54 +23,93 @@ const socketIO = new Server<ClientToServerEvents, ServerToClientEvents, {}, Sock
 });
 
 
+const closeSocket = (socket) => {
+	const userId = socket?.handshake?.auth?.userId;
+	console.info(`disconnected ${JSON.stringify(userId)}`)
+	socket.removeAllListeners();
+	socket.disconnect();
+}
+
 socketIO.on('connection', (socket) => {
-	
-	socket.on('setMap', async(map: Map, userId: string) => {
 
-		if (!map || !userId) return;
+	const userId = socket?.handshake?.auth?.userId;
 
+	console.info(`connected ${JSON.stringify(userId)}`);
+
+	if (typeof userId !== 'string' || !userId.trim()) return closeSocket(socket);
+
+	socket.data.userId = userId;
+
+	if (POSTPONED_SHOTS[userId]) {
+		socket.emit('shot', ...POSTPONED_SHOTS[userId]);
+		delete POSTPONED_SHOTS[userId];
+	}
+
+	socket.on('setMap', async(map: Map) => {
+		
+		if (!map) return;
 		socket.data.map = map;
-		socket.data.userId = userId;
+		console.info('setMap', userId);
+		delete POSTPONED_SHOTS[userId];
 		
 		const all = await socketIO.fetchSockets();
 		const readyToBattle: typeof all = [];
 
 		for (const socket of all) {
-			
 			if (!socket.data.map) continue;
-			if (!socket.data.userId) continue;
-
 			readyToBattle.push(socket);
+			while (readyToBattle.length >= 2) {
+				const first = readyToBattle.shift();
+				const second = readyToBattle.shift();
 
-			if (readyToBattle.length === 2) {
-				readyToBattle[0].emit('battle', readyToBattle[1].id, readyToBattle[1].data.map, true);
-				readyToBattle[1].emit('battle', readyToBattle[0].id, readyToBattle[0].data.map, false);
-				delete readyToBattle[0].data.map;
-				delete readyToBattle[1].data.map;
-				readyToBattle.splice(0, Infinity);
+				console.info('start battle', first.data.userId, second.data.userId);
+
+				first.emit(
+					'battle',
+					second.data.userId,
+					second.data.map,
+					true
+				);
+
+				second.emit(
+					'battle',
+					first.data.userId,
+					first.data.map,
+					false
+				);
+
+				delete first.data.map;
+				delete second.data.map;
 			}
-
 		}
-
 
 	});
 
-	socket.on('shot', async(toId: string, index: number) => {
-		console.info('SERVER RECEIVED SHOT', socket.id, '->', toId, index)
+	socket.on('shot', async(toUserId: string, index: number) => {
+		
+		console.info(`SERVER RECEIVED SHOT ${userId} -> ${toUserId}`);
+
 		const all = await socketIO.fetchSockets();
-		const targetSocket = all.find(socket => socket.id === toId);
+		const targetSocket = all.find(socket => socket.data.userId === toUserId);
+
 		if (!targetSocket) {
-			console.info('TARGET_NOT_FOUND!');
+			console.info('TARGET socket _NOT_FOUND!');
+			if (!POSTPONED_SHOTS[toUserId]) {
+				POSTPONED_SHOTS[toUserId] = [];
+			}
+			POSTPONED_SHOTS[toUserId].push(index);
 			return;
 		}
+
 		targetSocket.emit('shot', index);
+
 	});
 
 	socket.once('disconnect', () => {
-		socket.removeAllListeners();
-		socket.disconnect();
+		closeSocket(socket);
 	});
 
 });
 
-socketIO.listen(3495);
+
+socketIO.listen(Settings.serverPort);

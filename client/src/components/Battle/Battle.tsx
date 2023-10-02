@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import styles from './Battle.module.scss';
 import Socket from '../../utils/Socket';
 import Map from '../../types/Map';
-import Field2 from '../Field2/Field2';
+import Field from '../Field/Field';
 import Button from '../Button/Button';
 import Router from '../Router/Router';
 
@@ -21,17 +21,17 @@ class Battle extends React.Component<{
 	enemyMap: Map
 }, State> {
 
-	myfield: React.RefObject<Field2> = React.createRef();
-	enemyfield: React.RefObject<Field2> = React.createRef();
+	myfield: React.RefObject<Field> = React.createRef();
+	enemyfield: React.RefObject<Field> = React.createRef();
 
 	state: State = {
 		isMyTurn: this.props.isMyTurn
 	}
 
-	onEnemyHit = (index: number) => {
+	onEnemyHit = (...indexes: number[]) => {
 		const { isMyTurn, gameOver } = this.state;
 		if (isMyTurn || gameOver) return;
-		this.myfield.current?.makeShot(index);
+		this.myfield.current?.makeShot(...indexes);
 	}
 
 	componentDidMount = () => {
@@ -94,12 +94,16 @@ class Battle extends React.Component<{
 			<div className={clsx(styles.wrapper, isMyTurn ? styles.secondColActive : styles.firstColActive)}>
 
 				<div className={styles.firstColumn}>
-					<Field2
+					<Field
 						ref={this.myfield}
 						onTurn={this.onEnemyTurn}
 						disabled={isMyTurn}
-						status={(gameOver && !myWin) && <div style={{fontSize: '8cqmin', display: 'flex', flexDirection: 'column', alignContent: 'center', alignItems: 'center', gap: '8cqmin'}}>
-							<div>Вы проиграли :(</div>
+						status={gameOver && <div style={{fontSize: '8cqmin', display: 'flex', flexDirection: 'column', alignContent: 'center', alignItems: 'center', gap: '8cqmin'}}>
+							{myWin ? (
+								<div>Вы выиграли!</div>
+							) : (
+								<div>Вы проиграли :(</div>
+							)}
 							<Button onClick={() => Router.goBack()}>Играть ещё?</Button>
 						</div>}
 					/>
@@ -109,16 +113,12 @@ class Battle extends React.Component<{
 				<div className={styles.lastColumn}>
 
 					
-					<Field2
+					<Field
 						ref={this.enemyfield}
 						gameOver={gameOver}
 						enemy={true}
 						onTurn={this.onMyTurn}
 						disabled={!isMyTurn}
-						status={(gameOver && myWin) && <div style={{fontSize: '8cqmin', display: 'flex', flexDirection: 'column', alignContent: 'center', alignItems: 'center', gap: '8cqmin'}}>
-							<div>Вы выиграли!</div>
-							<Button onClick={() => Router.goBack()}>Играть ещё?</Button>
-						</div>}
 					/>
 
 				</div>

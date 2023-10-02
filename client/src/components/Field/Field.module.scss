@@ -1,16 +1,18 @@
 
 $padding: 3px;
 $letterSize: 1.5ch;
-$borderSize: 3px;
+
+$gridBorderSize: 4px;
 $gridBorderRadius: 6px;
+
+$shipBorderSize: 3px;
 $shipBorderRadius: 3px;
 
-.field {
+.outerWrapper {
 	max-width: 100cqmin;
 	min-width: 100cqmin;
 	min-height: 100cqmin;
 	max-height: 100cqmin;
-	
 	font-size: 4cqmin;
 	display: flex;
 	flex-direction: column;
@@ -59,6 +61,7 @@ $shipBorderRadius: 3px;
 	overflow: hidden;
 	border-radius: $gridBorderRadius;
 
+
 	&::before {
 		content: '';
 		position: absolute;
@@ -66,9 +69,10 @@ $shipBorderRadius: 3px;
 		left: 0px;
 		right: 0px;
 		bottom: 0px;
+		z-index: 1;
 		pointer-events: none;
 		border-radius: inherit;
-		border: $borderSize solid currentColor;
+		border: $gridBorderSize solid currentColor;
 	}
 
 	& > * {
@@ -80,7 +84,7 @@ $shipBorderRadius: 3px;
 	}
 }
 
-.field.disabled .grid::after {
+.outerWrapper.disabled .grid::after {
 	content: '';
 	position: absolute;
 	top: 0px;
@@ -101,12 +105,12 @@ $shipBorderRadius: 3px;
 	justify-content: center;
 	background-color: rgba(white, 0.8);
 	border-radius: $gridBorderRadius;
-	border: $borderSize solid currentColor;
+	border: $gridBorderSize solid currentColor;
 }
 
 
 @media screen and (orientation:landscape) {
-	.field.enemy {
+	.outerWrapper.enemy {
 		transform: scaleX(-1);
 		.letters, .grid, .digits {
 			transform: scaleX(-1);
@@ -119,7 +123,7 @@ $shipBorderRadius: 3px;
 
 
 @media screen and (orientation:portrait) {
-	.field.enemy {
+	.outerWrapper.enemy {
 		transform: scaleY(-1);
 		.letters, .grid, .digits {
 			transform: scaleY(-1);
@@ -130,12 +134,12 @@ $shipBorderRadius: 3px;
 
 
 
-.field.gameOver,
-.field:not(.enemy) {
+.outerWrapper.gameOver,
+.outerWrapper:not(.enemy) {
 	pointer-events: none;
 }
 
-.field.enemy:not(.gameOver) .ship:not(.hit) {
+.outerWrapper.enemy:not(.gameOver) .ship:not(.hit) {
 	opacity: 0;
 }
 
@@ -156,10 +160,10 @@ $shipBorderRadius: 3px;
 		border-top-right-radius: ($trr * $shipBorderRadius);
 		border-bottom-left-radius: ($blr * $shipBorderRadius);
 		border-bottom-right-radius: ($brr * $shipBorderRadius);
-		border-top: ($top * $borderSize) solid currentColor;
-		border-left: ($left * $borderSize) solid currentColor;
-		border-right: ($right * $borderSize) solid currentColor;
-		border-bottom: ($bottom * $borderSize) solid currentColor;
+		border-top: ($top * $shipBorderSize) solid currentColor;
+		border-left: ($left * $shipBorderSize) solid currentColor;
+		border-right: ($right * $shipBorderSize) solid currentColor;
+		border-bottom: ($bottom * $shipBorderSize) solid currentColor;
 	}
 }
 

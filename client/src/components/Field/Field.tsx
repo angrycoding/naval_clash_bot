@@ -1,6 +1,6 @@
 import React, { CSSProperties } from 'react';
 import clsx from "clsx";
-import styles from './Field2.module.scss';
+import styles from './Field.module.scss';
 import Map from '../../types/Map';
 import generateMap from '../../utils/generateMap';
 import theme from '../../index.module.scss'
@@ -15,17 +15,19 @@ import hit4 from './hit4.wav';
 
 import h1 from './h1.png';
 import h2 from './h2.png';
-import h3 from './h3.png';
-import h4 from './h4.png';
 
 import c1 from './c1.png';
 import c2 from './c2.png';
 import c3 from './c3.png';
-import c4 from './c4.png';
 
 import xy2index from '../../utils/xy2index';
 import index2xy from '../../utils/index2xy';
 import { playSound } from '../../utils/playSound';
+import generateGrid from '../../utils/generateGrid';
+
+
+const FIELD_GRID_BG = generateGrid(1.2, '10%', theme.gridColor);
+
 
 const CROSSES = [c1, c2, c3];
 const MISSES = [h1, h2];
@@ -130,18 +132,6 @@ const Label = React.memo((props: { children: any }) => (
 
 
 
-const generateGrid = () => {
-	const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
-		<defs>
-			<pattern id="pattern_KJHz" patternUnits="userSpaceOnUse" width="10%" height="10%">
-				<line x1="0" y1="0" x2="0" y2="10%" stroke="${theme.gridColor}" stroke-width="2" />
-				<line x1="0" y1="0" x2="10%" y2="0" stroke="${theme.gridColor}" stroke-width="2" />
-			</pattern>
-		</defs>
-		<rect width="100%" height="100%" fill="url(#pattern_KJHz)" />
-	</svg>`
-	return `url("data:image/svg+xml;base64,${window.btoa(svg)}")`;
-}
 
 
 interface Props {
@@ -159,7 +149,8 @@ interface State {
 }
 
 
-class Field2 extends React.Component<Props, State> {
+
+class Field extends React.Component<Props, State> {
 
 	constructor(props: Props) {
 		super(props);
@@ -168,7 +159,7 @@ class Field2 extends React.Component<Props, State> {
 		}
 	}
 
-	makeShot = (index: number) => {
+	makeShot = (...indexes: number[]) => {
 
 		const { onTurn } = this.props;
 
@@ -180,44 +171,47 @@ class Field2 extends React.Component<Props, State> {
 		this.setState(state => {
 
 			let map = state.map;
-			const entity = map[index];
 
-			if (!entity) {
-				playSound(miss);
-				map = { ...map, [index]: entity | 2 }
-				changeSide = true;
-				allDead = false;
-				callTurn = true;
-			}
-	
-			else if (isShip(entity) && !isHitShip(entity)) {
-	
-				map = {
-					...map,
-					[index]: getShipId(entity) << 2 | 1
-				};
-	
-				if (isDeadShip(map, getShipId(entity))) {
-					playSound(hit1);
-					changeSide = false;
-					allDead = isGameOver(map);
-					callTurn = true;
-				} else {
-					playSound([hit2, hit3, hit4][getRandomInt(0, 2)]);
-					changeSide = false;
+			for (const index of indexes) {
+				const entity = map[index];
+
+				if (!entity) {
+					playSound(miss);
+					map = { ...map, [index]: entity | 2 }
+					changeSide = true;
 					allDead = false;
 					callTurn = true;
 				}
-				
-	
-	
+		
+				else if (isShip(entity) && !isHitShip(entity)) {
+		
+					map = {
+						...map,
+						[index]: getShipId(entity) << 2 | 1
+					};
+		
+					if (isDeadShip(map, getShipId(entity))) {
+						playSound(hit1);
+						changeSide = false;
+						allDead = isGameOver(map);
+						callTurn = true;
+					} else {
+						playSound([hit2, hit3, hit4][getRandomInt(0, 2)]);
+						changeSide = false;
+						allDead = false;
+						callTurn = true;
+					}
+					
+		
+		
+				}
 			}
 	
 			return { ...state, map: fillBorders(map) };
 
 		}, () => {
 			if (!callTurn) return;
-			onTurn?.(changeSide, allDead, index);
+			onTurn?.(changeSide, allDead, indexes[0]);
 		})
 
 
@@ -242,7 +236,7 @@ class Field2 extends React.Component<Props, State> {
 
 		return <div className={clsx(
 			className,
-			styles.field,
+			styles.outerWrapper,
 			enemy && styles.enemy,
 			gameOver && styles.gameOver,
 			disabled && styles.disabled
@@ -259,7 +253,8 @@ class Field2 extends React.Component<Props, State> {
 				</div>
 
 
-				<div className={styles.grid} style={{backgroundImage: generateGrid()}}>
+				<div className={styles.grid} style={FIELD_GRID_BG}>
+
 
 					{new Array(100).fill(0).map((_, index) => {
 
@@ -330,4 +325,4 @@ class Field2 extends React.Component<Props, State> {
 	}
 }
 
-export default Field2;
+export default Field;

@@ -6,14 +6,24 @@ import Settings from '../Settings';
 
 declare const isProduction: boolean;
 
-// const auth = {
-// 	userid: getUserId()
-// }
-
-const socketIO: Socket<ServerToClientEvents, ClientToServerEvents> = io('https://new.videotam.ru', {
+const socketIO: Socket<ServerToClientEvents, ClientToServerEvents> = io((
+	isProduction ?
+	'https://new.videotam.ru' :
+	`http://localhost:${Settings.serverPort}`
+), {
 	path: Settings.socketPath,
 	autoConnect: true,
-	// auth
+	auth: {
+		userId: getUserId()
+	}
 });
+
+// @ts-ignore
+window.xxx = () => {
+	socketIO.disconnect();
+	setTimeout(() => {
+		socketIO.connect();
+	}, 10000);
+}
 
 export default socketIO;

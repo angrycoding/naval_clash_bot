@@ -47,7 +47,7 @@ class Router extends React.Component<RouterProps> {
 		if (!instance) return;
 
 		const newUrl = uri_resolve(path, instance.history[instance.history.length - 1]);
-		instance.goForward(cleanupUrl(newUrl), props);
+		instance.goForward(cleanupUrl(newUrl), props || {});
 
 		// const anchor = document.createElement('div');
 		// anchor.setAttribute('data-href', cleanupUrl(path));
