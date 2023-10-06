@@ -1,16 +1,15 @@
-import styles from '../Battle/Battle.module.scss';
-import clsx from 'clsx';
 import Button from '../Button/Button';
 import Field from '../Field/Field';
 import ThreeDots from '../ThreeDots/ThreeDots';
 import { useState } from 'react';
-import { Map, generateMap, isFresh } from '../../utils/mapUtils';
+import { Map, generateMap } from '../../utils/mapUtils';
 import socketIO from '../../utils/Socket';
 import Layout from '../Layout/Layout';
 import Modal from '../Modal/Modal';
 import GameState from '../../types/GameState';
 import Counter from '../Counter/Counter';
 import getTempUserId from '../../utils/getTempUserId';
+import i18n from '../../utils/i18n';
 
 const myUserId = getTempUserId();
 
@@ -56,18 +55,20 @@ const PlaceShips = (props: { gameState?: GameState }) => {
 
 							{disabled ? (
 								<Button disabled={disabled}>
-									<ThreeDots>Ждём {enemyName || 'оппонента'}</ThreeDots>
+									<ThreeDots>
+										{i18n('WAITING_FOR_PLAYER', enemyName || i18n('ENEMY_FALLBACK_NAME'))}
+									</ThreeDots>
 								</Button>
 							) : (
 								<Button disabled={disabled} onClick={onReady}>
-									ГОТОВ К ИГРЕ
+									{i18n('READY_TO_PLAY')}
 								</Button>
 							)}
 						</div>
 												
 						<div>
 							<Button onClick={onGenerate} disabled={disabled}>
-								ПОМЕНЯТЬ {seconds || ''}
+								{i18n('CHANGE_LAYOUT', String(seconds || ''))}
 							</Button>
 						</div>
 

@@ -23,6 +23,11 @@ socketIO.on('updateState', (gameState?: GameState) => {
 
 });
 
+export const clearGameState = () => {
+	localStorage.removeItem('sessionId');
+	globalGameState = undefined;
+	document.dispatchEvent(new Event('updateGameState'));
+}
 
 const useGameState = (): 0 | undefined | GameState => {
 

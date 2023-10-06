@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './Battle.module.scss';
 import Field from '../Field/Field';
 import socketIO from '../../utils/Socket';

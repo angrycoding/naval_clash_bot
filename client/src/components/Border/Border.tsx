@@ -1,6 +1,5 @@
 import React, { CSSProperties } from 'react';
 import styles from './Border.module.scss';
-import clsx from 'clsx';
 import getRandomInt from '../../utils/getRandomInt';
 
 interface Props {

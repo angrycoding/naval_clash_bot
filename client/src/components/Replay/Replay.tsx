@@ -7,6 +7,7 @@ import Layout from "../Layout/Layout";
 import socketIO from "../../utils/Socket";
 import Modal from "../Modal/Modal";
 import Button from "../Button/Button";
+import i18n from "../../utils/i18n";
 
 const myUserId = getTempUserId();
 
@@ -33,7 +34,7 @@ const Replay = (props: { gameState: GameState }) => {
 				<div style={{display: 'flex', flexDirection: 'column', gap: 32}}>
 				
 					<div style={{fontSize: '8cqmin'}}>
-						{winner ? 'Вы выиграли!' : 'Вы проиграли :('}
+						{winner ? i18n('YOU_WIN') : i18n('YOU_LOSE')}
 					</div>
 					
 					
@@ -44,8 +45,8 @@ const Replay = (props: { gameState: GameState }) => {
 							<Button disabled={disabled} onClick={onReadyToReplay}>
 								{
 									disabled ?
-									<>ЖДЕМ {enemyName} {s}</> :
-									<>играть еще c {enemyName} {s}</>
+									i18n('WAITING_FOR_PLAYER', enemyName, s) :
+									i18n('PLAY_AGAIN_WITH', enemyName, s)
 								}
 								
 							</Button>

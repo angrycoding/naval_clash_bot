@@ -1,31 +1,17 @@
 import { Socket, io } from 'socket.io-client';
-import getUserId from './getUserId';
 import ServerToClientEvents from '../types/ServerToClientEvents';
 import ClientToServerEvents from '../types/ClientToServerEvents';
 import Settings from '../Settings';
-import generateUniqueId from './generateUniqueId';
 import getTempUserId from './getTempUserId';
+import userLocale from './userLocale';
+import TelegramApi from './TelegramApi';
 
-declare const Telegram: any;
 declare const isProduction: boolean;
 
-const gameIdOrSessionId = Telegram?.WebApp?.initDataUnsafe?.start_param;
-
-
-const auth = Object.defineProperties({}, {
-
-	// userId: String(getUserId()),
-	// firstName: 'FIRST_NAME',
-	// sessionId: gameIdOrSessionId?.startsWith('s') ? gameIdOrSessionId.slice(1) : `SESSION_ID`,
-	// gameId: gameIdOrSessionId?.startsWith('g') ? gameIdOrSessionId.slice(1) : ''
-
-	userName: {
-		enumerable: true,
-		get() {
-			let result: any = Telegram?.WebApp?.initDataUnsafe?.user?.first_name;
-			return (typeof result === 'string' ? result : '');
-		}
-	},
+const auth = Object.defineProperties({
+	locale: userLocale,
+	userName: TelegramApi.getFirstName()
+}, {
 
 	userId: {
 		enumerable: true,
@@ -45,7 +31,7 @@ const auth = Object.defineProperties({}, {
 
 
 const socketIO: Socket<ServerToClientEvents, ClientToServerEvents> = io((
-	'isProduction' ?
+	isProduction ?
 	'https://new.videotam.ru' :
 	`http://192.168.1.109:${Settings.socketIoPort}`
 ), {
@@ -53,9 +39,5 @@ const socketIO: Socket<ServerToClientEvents, ClientToServerEvents> = io((
 	path: Settings.socketIoPath,
 	autoConnect: true,
 });
-
-// setTimeout(() => {
-// 	socketIO.connect();
-// }, 1000);
 
 export default socketIO;

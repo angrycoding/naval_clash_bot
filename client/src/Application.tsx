@@ -4,6 +4,7 @@ import PlaceShips from "./components/PlaceShips/PlaceShips";
 import Battle from "./components/Battle/Battle";
 import Loading from "./components/Loading/Loading";
 import Replay from "./components/Replay/Replay";
+import GameOver from "./components/GameOver/GameOver";
 
 
 const Application = () => {
@@ -31,9 +32,8 @@ const Application = () => {
 		return <PlaceShips gameState={gameState} />;
 	}
 
-	return <div>ИГРА БЫЛА ЗАКОНЧЕНА ИЛИ УДАЛЕНА</div>
 
-
+	return <GameOver />;
 	
 }
 

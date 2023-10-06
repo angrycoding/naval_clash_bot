@@ -1,7 +1,8 @@
+import clsx from 'clsx';
 import styles from './Layout.module.scss'
 
-const Layout = (props: { field1: any, field2: any }) => (
-	<div className={styles.wrapper}>
+const Layout = (props: { className?: string, field1: any, field2: any }) => (
+	<div className={clsx(styles.wrapper, props.className)}>
 		<div className={styles.firstColumn}>
 			{props.field1}
 		</div>

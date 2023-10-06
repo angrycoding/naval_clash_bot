@@ -3,6 +3,7 @@ import { generateMap } from '../../utils/mapUtils';
 import Field from '../Field/Field';
 import Layout from '../Layout/Layout';
 import styles from './Loading.module.scss';
+import i18n from '../../utils/i18n';
 
 
 const Loading = () => {
@@ -30,8 +31,8 @@ const Loading = () => {
 				<Field map={randomMap2} />
 			} />
 			<div>
-				Loading
-				<div>please wait</div>
+				{i18n('LOADING')}
+				<div>{i18n('PLEASE_WAIT')}</div>
 			</div>
 		</div>
 	);

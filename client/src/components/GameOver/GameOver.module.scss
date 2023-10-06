@@ -1,0 +1,21 @@
+.banner {
+	mask-image: url('./sailor-svgrepo-com.svg');
+	background-color: currentColor;
+	mask-size: 80%;
+	mask-repeat: no-repeat;
+	position: absolute;
+	mask-position: bottom;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+}
+
+.gameOver {
+	font-size: 7cqmin;
+	padding: 10%;
+	display: flex;
+	flex-direction: column;
+	gap: 6cqmin;
+	pointer-events: all;
+}
