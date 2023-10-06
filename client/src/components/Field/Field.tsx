@@ -1,8 +1,6 @@
 import React, { CSSProperties } from 'react';
 import clsx from "clsx";
 import styles from './Field.module.scss';
-import Map from '../../types/Map';
-import generateMap from '../../utils/generateMap';
 import theme from '../../index.module.scss'
 import getRandomInt from '../../utils/getRandomInt';
 
@@ -20,10 +18,9 @@ import c1 from './c1.png';
 import c2 from './c2.png';
 import c3 from './c3.png';
 
-import xy2index from '../../utils/xy2index';
-import index2xy from '../../utils/index2xy';
 import { playSound } from '../../utils/playSound';
 import generateGrid from '../../utils/generateGrid';
+import { Map, getShipId, index2xy, isDeadShip, isFresh, isHitShip, isSea, isShip, xy2index } from '../../utils/mapUtils';
 
 
 const FIELD_GRID_BG = generateGrid(1.2, '10%', theme.gridColor);
@@ -32,78 +29,7 @@ const FIELD_GRID_BG = generateGrid(1.2, '10%', theme.gridColor);
 const CROSSES = [c1, c2, c3];
 const MISSES = [h1, h2];
 
-const allShipIds = [
-	1, 2, 3, 4,
-	5, 6, 7,
-	8, 9,
-	10
-]
 
-const isDeadShip = (map: Map, shipId: number) => (
-	Object.values(map)
-	.filter(entity => getShipId(entity) === shipId)
-	.every(isHitShip)
-)
-
-const isGameOver = (map: Map) => (
-	allShipIds.every(id => isDeadShip(map, id)
-))
-
-const fillBorders = (map: Map): Map => {
-
-	const shipCells: any = {};
-	
-	for (const index in map) {
-		const indexNum = parseInt(index, 10);
-		const entity = map[index];
-		if (!isShip(entity)) continue;
-		const isHit = isHitShip(entity);
-		const shipId = getShipId(entity);
-		if (!shipCells[shipId]) shipCells[shipId] = [];
-		shipCells[shipId].push(isHit ? indexNum : undefined);
-	}
-
-	for (const shipId in shipCells) {
-		const cells = shipCells[shipId];
-		const isDead = cells.every((i: any) => i !== undefined);
-		if (!isDead) continue;
-		for (const index of cells) {
-			const indexNum = Math.abs(parseInt(index));
-			const { x, y } = index2xy(indexNum);
-			for (let xx = x - 1; xx <= x + 1; xx++) {
-				for (let yy = y - 1; yy <= y + 1; yy++) {
-					const index = xy2index(xx, yy);
-					if (map[index]) continue;
-					map[index] = 2;
-				}
-			}
-		}
-	}
-
-	return map;
-}
-
-
-
-const getShipId = (entity: any): number => {
-	if (!isShip(entity)) return -1;
-	return (entity >> 2) & 15;
-}
-
-const isSea = (entity: any): boolean => {
-	if (!entity) return false;
-	return (entity & 3) === 2;
-}
-
-const isShip = (entity: any): boolean => {
-	if (!entity) return false;
-	return [0, 1].includes(entity & 3);
-}
-
-const isHitShip = (entity: any): boolean => {
-	if (!entity) return false;
-	return (entity & 3) === 1;
-}
 
 const SeaCell = React.memo(() => (
 	<div style={{
@@ -130,117 +56,69 @@ const Label = React.memo((props: { children: any }) => (
 ));
 
 
-
-
-
-
 interface Props {
+	map: Map;
 	style?: CSSProperties;
 	className?: string;
-	enemy?: boolean;
-	gameOver?: boolean;
-	disabled?: boolean;
+	background?: string;
 	status?: any;
-	onTurn?: (changeTurn: boolean, allDead: boolean, index: number) => void;
+	reverseLegend?: boolean;
+	hideAliveShips?: boolean;
+	onHit?: (index: number) => void;
 }
 
-interface State {
-	map: Map;
-}
+class Field extends React.Component<Props> {
+
+	componentDidUpdate = (oldProps: Readonly<Props>) => {
+		
+		if (JSON.stringify(oldProps.map) === JSON.stringify(this.props.map)) return;
 
 
+		if (isFresh(this.props.map)) return;
 
-class Field extends React.Component<Props, State> {
+		const oldMap = oldProps.map;
+		const newMap = this.props.map;
 
-	constructor(props: Props) {
-		super(props);
-		this.state = {
-			map: props.enemy ? {} : generateMap()
+		let sound = '';
+
+		for (const index in newMap) {
+			if (newMap[index] === oldMap[index]) continue;
+			const oldEntity = oldMap[index];
+			const newEntity = newMap[index];
+			if (oldEntity === undefined && newEntity !== undefined) {
+				if (!sound) sound = miss;
+			} else if (!isHitShip(oldEntity) && isHitShip(newEntity)) {
+				if (isDeadShip(this.props.map, getShipId(newEntity))) {
+					sound = hit1;
+				} else {
+					sound = [hit2, hit3, hit4][getRandomInt(0, 2)];
+				}
+				break;
+			}
+		}
+
+		if (sound) {
+			playSound(sound)
 		}
 	}
 
-	makeShot = (...indexes: number[]) => {
-
-		const { onTurn } = this.props;
-
-
-		let changeSide = false;
-		let callTurn = false;
-		let allDead = false;
-
-		this.setState(state => {
-
-			let map = state.map;
-
-			for (const index of indexes) {
-				const entity = map[index];
-
-				if (!entity) {
-					playSound(miss);
-					map = { ...map, [index]: entity | 2 }
-					changeSide = true;
-					allDead = false;
-					callTurn = true;
-				}
-		
-				else if (isShip(entity) && !isHitShip(entity)) {
-		
-					map = {
-						...map,
-						[index]: getShipId(entity) << 2 | 1
-					};
-		
-					if (isDeadShip(map, getShipId(entity))) {
-						playSound(hit1);
-						changeSide = false;
-						allDead = isGameOver(map);
-						callTurn = true;
-					} else {
-						playSound([hit2, hit3, hit4][getRandomInt(0, 2)]);
-						changeSide = false;
-						allDead = false;
-						callTurn = true;
-					}
-					
-		
-		
-				}
-			}
-	
-			return { ...state, map: fillBorders(map) };
-
-		}, () => {
-			if (!callTurn) return;
-			onTurn?.(changeSide, allDead, indexes[0]);
-		})
-
-
-	}
-
-	randomize = () => {
-		this.setState(state => ({ ...state, map: generateMap() }));
-	}
-
-	get = (): Map => {
-		return {...this.state.map};
-	}
-
-	set = (map: Map) => {
-		this.setState(state => ({ ...state, map: { ...map} }));
+	onHit = (index: number) => {
+		this.props?.onHit?.(index);
 	}
 
 	render() {
 
-		const { map } = this.state;
-		const { className, enemy, gameOver, status, style, disabled } = this.props;
+		const { map, reverseLegend, hideAliveShips, background, className, status, style } = this.props;
 
 		return <div className={clsx(
 			className,
 			styles.outerWrapper,
-			enemy && styles.enemy,
-			gameOver && styles.gameOver,
-			disabled && styles.disabled
-		)} style={style}>
+			reverseLegend && styles.reverseLegend,
+			hideAliveShips && styles.hideAliveShips
+		)} style={{
+			...(style),
+			'--background': background
+		} as CSSProperties}>
 
 
 			<div className={styles.letters}>
@@ -258,7 +136,6 @@ class Field extends React.Component<Props, State> {
 
 					{new Array(100).fill(0).map((_, index) => {
 
-
 						const entity = map[index];
 
 						if (isSea(entity)) {
@@ -274,10 +151,10 @@ class Field extends React.Component<Props, State> {
 
 
 							const isHit = isHitShip(entity);
-							const leftObject = (enemy && !gameOver ? isHitShip : isShip)(map[xy2index(index2xy(index, -1, 0))]);
-							const rightObject = (enemy && !gameOver ? isHitShip : isShip)(map[xy2index(index2xy(index, 1, 0))]);
-							const topObject = (enemy && !gameOver ? isHitShip : isShip)(map[xy2index(index2xy(index, 0, -1))]);
-							const bottomObject = (enemy && !gameOver ? isHitShip : isShip)(map[xy2index(index2xy(index, 0, 1))]);
+							const leftObject = (hideAliveShips ? isHitShip : isShip)(map[xy2index(index2xy(index, -1, 0))]);
+							const rightObject = (hideAliveShips ? isHitShip : isShip)(map[xy2index(index2xy(index, 1, 0))]);
+							const topObject = (hideAliveShips ? isHitShip : isShip)(map[xy2index(index2xy(index, 0, -1))]);
+							const bottomObject = (hideAliveShips ? isHitShip : isShip)(map[xy2index(index2xy(index, 0, 1))]);
 
 							const isSquare = Boolean(!leftObject && !rightObject && !topObject && !bottomObject);
 							const isVerStart = Boolean(!leftObject && !rightObject && !topObject && bottomObject);
@@ -288,10 +165,9 @@ class Field extends React.Component<Props, State> {
 							const isHorCenter = Boolean(leftObject && rightObject && !topObject && !bottomObject);
 
 
-
 							return (
 								<div key={index}
-									onClick={() => this.makeShot(index)}
+									onClick={isHit ? undefined : () => this.onHit(index)}
 									className={clsx(
 										isSquare && [styles.ship, styles.one, isHit && styles.hit],
 										isVerStart && [styles.ship, styles.verStart, isHit && styles.hit],
@@ -308,13 +184,13 @@ class Field extends React.Component<Props, State> {
 						}
 
 
-						return <div key={index} onClick={() => this.makeShot(index)} />
+						return <div key={index} onClick={() => this.onHit(index)} />
 
 					})}
 
-					{status && <div className={styles.status}>
+					<div className={styles.status}>
 						<div>{status}</div>
-					</div>}
+					</div>
 					
 
 				</div>

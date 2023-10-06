@@ -1,0 +1,42 @@
+.wrapper {
+	top: 15px;
+	left: 15px;
+	right: 15px;
+	bottom: 15px;
+	position: absolute;
+	display: flex;
+	gap: 5cqmin;
+}
+
+
+
+
+.firstColumn, .lastColumn {
+	container-type: size;
+	display: flex;
+	flex: 1;
+}
+
+@media screen and (orientation:landscape) {
+	.wrapper {
+		flex-direction: row;
+	}
+	.firstColumn {
+		justify-content: flex-end;
+	}
+	.firstColumn, .lastColumn {
+		align-items: center;
+	}
+}
+
+@media screen and (orientation:portrait) {
+	.wrapper {
+		flex-direction: column;
+	}
+	.firstColumn {
+		align-items: flex-end;
+	}
+	.firstColumn, .lastColumn {
+		justify-content: center;
+	}
+}

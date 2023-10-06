@@ -1,48 +1,9 @@
-.wrapper {
-	top: 10px;
-	left: 10px;
-	right: 10px;
-	bottom: 10px;
-	position: absolute;
-	display: flex;
-	gap: 5cqmin;
+.enemyName {
+	font-size: 10cqmin;
+	opacity: 0.8;
 }
 
-
-
-
-.firstColumn, .lastColumn {
-	container-type: size;
-	display: flex;
-	flex: 1;
-}
-
-@media screen and (orientation:landscape) {
-	.wrapper {
-		flex-direction: row;
-	}
-	.firstColumn {
-		justify-content: flex-end;
-	}
-	.firstColumn, .lastColumn {
-		align-items: center;
-	}
-}
-
-@media screen and (orientation:portrait) {
-	.wrapper {
-		flex-direction: column;
-	}
-	.firstColumn {
-		align-items: flex-end;
-	}
-	.firstColumn, .lastColumn {
-		justify-content: center;
-	}
-}
-
-
-.firstColActive .lastColumn,
-.secondColActive .firstColumn {
-	pointer-events: none;
+.timer {
+	font-size: 50cqmin;
+	color: rgba(red, 0.3);
 }

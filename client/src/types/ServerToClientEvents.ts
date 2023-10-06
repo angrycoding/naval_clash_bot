@@ -1,10 +1,5 @@
-import Map from "./Map";
+import GameState from "./GameState";
 
 export default interface ServerToClientEvents {
-	shot: (...indexes: number[]) => void;
-	battle: (
-		userId: string,
-		map: Map,
-		turn: boolean
-	) => void;
+	updateState: (gameState?: GameState) => void;
 }

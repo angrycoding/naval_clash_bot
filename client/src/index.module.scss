@@ -28,7 +28,16 @@ html, body {
 	height: var(--tg-viewport-height, 100%);
 }
 
+.wrapper {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+}
+
 :export {
 	smallGridColor: rgba(gray, 0.2);
 	gridColor: rgba(#2204BF, 0.5);
+	redBg: rgba(red, 0.15);
 }
