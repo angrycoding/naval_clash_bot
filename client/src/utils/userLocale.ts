@@ -6,6 +6,9 @@ const result: any = (
 	navigator.language
 );
 
-const userLocale = (typeof result === 'string' ? result : 'en').toLowerCase();
+const userLocale = (
+	typeof result === 'string' && result.trim() ?
+	result : 'en'
+).toLowerCase();
 
 export default userLocale;
