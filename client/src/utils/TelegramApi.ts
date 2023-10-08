@@ -43,7 +43,7 @@ const getUserId = (): number => {
 
 const getUserLocale = (): string => {
 	const result = Telegram?.WebApp?.initDataUnsafe?.user?.language_code;
-	return (typeof result === 'string' && result.trim() ? result : '');
+	return (typeof result === 'string' && result.trim() ? result : '').trim().toLowerCase();
 }
 
 const TelegramApi = {

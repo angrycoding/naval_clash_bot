@@ -3,11 +3,6 @@ const Settings = {
 	socketIoPort: 3495,
 	socketIoPath: '/api/',
 
-	telegramBotPort: 3494,
-	telegramBotApiUrl: "https://api.telegram.org",
-	telegramBotToken: "5847973427:AAGb4RCSqoaeaDW6WL-H9z1ubKUdp5-txCQ",
-	telegramBotRequestTimeoutMs: 1000,
-
 	randomNamesEn: [
 		'Vladimir',
 		'Mikhail',

@@ -7,8 +7,7 @@ const result: any = (
 );
 
 const userLocale = (
-	typeof result === 'string' && result.trim() ?
-	result : 'en'
+	result?.trim()?.split('-')?.[0] || 'en'
 ).toLowerCase();
 
 export default userLocale;
