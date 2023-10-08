@@ -1,6 +1,7 @@
 # Naval Clash Game - Telegram Mini App
 
-Naval Clash a beloved childhood game for everyone. Play now here: https://t.me/naval_clash_bot/play
+Naval Clash a beloved childhood game for everyone.
+Play now here: https://t.me/naval_clash_bot/play
 
 ![output](https://github.com/angrycoding/naval_clash_bot/assets/895042/c8cd0dce-69d9-4965-954b-fbfec04ed482)
 
