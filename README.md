@@ -13,7 +13,7 @@ some parts of the client side code (i.e. shared code). Before starting developin
 git clone git@github.com:angrycoding/naval_clash_bot.git
 ```
 
-### Starting the client:
+### Starting the client
 
 ```
 cd client
@@ -22,7 +22,7 @@ yarn start
 
 Client side will start on port 3000, so now you should be able to open it in your web-browser (http://localhost:3000/)
 
-### Building the client:
+### Building the client
 
 In order to produce client's production build just run:
 
@@ -33,7 +33,7 @@ yarn build
 
 Now just go to **client/dist** folder and see all build artefacts.
 
-### Starting the server:
+### Starting the server
 
 Starting the server is also pretty simple:
 
@@ -45,7 +45,7 @@ yarn start
 This will start watching **server/src** folder and will recompile / restart backend whenever some change is made. By default server will start on port 3495, but you can adjust it
 if you change **socketIoPort** [here](https://github.com/angrycoding/naval_clash_bot/blob/main/client/src/Settings.ts).
 
-### Building the server:
+### Building the server
 
 Just go to **server** directory and run:
 
@@ -57,7 +57,7 @@ yarn build
 This will compile all TypeScript files located in **server/src** and will produce one single bundle in **server/dist** (index.js) that you can run on your own dedicated server. This will also create
 **server/dist/pm2.json** file that you can use in combination with [PM2 process manager](https://pm2.keymetrics.io/), but of course feel free to run it manually if you wish so.
 
-### Building client and server altogether:
+### Building client and server altogether
 
 There is pretty useful script that will let you to build client and server altogether at once, [check it out](https://github.com/angrycoding/naval_clash_bot/blob/main/build.sh):
 
@@ -114,6 +114,8 @@ http {
 
 }
 ```
+
+But of course, if you find all this too complicated, then you can stil do it your own way.
 
 ## Client overview
 
