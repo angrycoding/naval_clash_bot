@@ -4,6 +4,7 @@
   "build": "rm -rf dist && mkdir -p dist && yarn tsc && ./makeBundle.js"
  },
  "dependencies": {
+  "cheerio": "^1.0.0-rc.12",
   "request": "^2.88.2",
   "socket.io": "^4.7.2",
   "sqlite3": "^5.1.6"
@@ -14,7 +15,6 @@
   "fs-extra": "^11.1.1",
   "nodemon": "^3.0.1",
   "recursive-readdir": "^2.2.3",
-  "typescript": "^5.2.2",
-  "uglify-es": "^3.3.9"
+  "typescript": "^5.2.2"
  }
 }
