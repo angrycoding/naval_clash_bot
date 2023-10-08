@@ -67,6 +67,54 @@ There is pretty useful script that will let you to build client and server altog
 
 This will run client build + server build and put everything into **dist** folder in the project root.
 
+### Note about setting it up on real server
+
+Usually when it comes to the point when you need to deploy such application on server then you have two friends: [NGINX](https://www.nginx.com/) and [PM2 process manager](https://pm2.keymetrics.io/)
+First will handle all content serving, second will make sure that your server is running well and restart it in case if something goes wrong. That's why this project doesn't contain any [Express](https://expressjs.com/) server
+or anything like that, also you won't find any SSL stuff here, cause usually in real life you would handle it separately and externally. Also that's exactly the reason why server side is not starting on some port like 80 or 443,
+but instead uses some random port numbers. For my setup I just use combination of **NGINX** and **PM2** drop all stuff produced by **build.sh** into one folder on my server. But just in case if you're curious then my **nginx.conf** looks like this:
+
+```
+worker_processes auto;
+user root;
+
+events {
+	worker_connections 8000;
+	multi_accept on;
+}
+
+http {
+
+	server_names_hash_bucket_size  64;
+	include /etc/nginx/mime.types;
+
+	server {
+		ssl_certificate /etc/letsencrypt/fullchain.pem;
+		ssl_certificate_key /etc/letsencrypt/privkey.pem;
+		ssl_trusted_certificate /etc/letsencrypt/fullchain.pem;
+		listen 443 ssl;
+
+		# make sure that you use correct host name
+		server_name naval_clash_bot.com;
+
+		# directory where I drop all build
+		root /root/naval_clash_bot;
+
+		index index.html;
+		error_page 404 https://naval_clash_bot.com/;
+
+		# connect with api
+		location /api/ {
+			proxy_set_header X-Real-IP $remote_addr;
+			# use port number that you run your backend part on
+			proxy_pass http://127.0.0.1:3495;
+		}
+
+	}
+
+}
+```
+
 ## Client overview
 
 From the client side perspective of view it's just [TypeScript](https://www.typescriptlang.org/) + [React](https://react.dev/) + [Socket.IO](https://socket.io/).
