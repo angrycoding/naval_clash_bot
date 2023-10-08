@@ -4,6 +4,8 @@ Naval Clash a beloved childhood game for everyone.
 
 Play now here: https://t.me/naval_clash_bot/play
 
+Author: https://www.linkedin.com/in/ruslanmatveev/
+
 ![output](https://github.com/angrycoding/naval_clash_bot/assets/895042/c8cd0dce-69d9-4965-954b-fbfec04ed482)
 
 Just in case if you have no idea what it is, then [here is some description](https://www.thesprucecrafts.com/the-basic-rules-of-battleship-411069)
@@ -126,6 +128,16 @@ http {
 
 But of course, if you find all this too complicated, then you can stil do it your own way.
 
+## Setup from Telegram side
+
+Here is what you have to do in order to recreate something similar:
+
+1. Contact [BotFather bot](https://t.me/BotFather) and ask him to create new bot.
+2. After that, open bot's menu and choose **/newapp**
+3. You'll be asked to choose the bot that you wan't to bind this new app with. Choose the one that you've just created on step 1.
+4. After few more questions, you'll be asked to give app url, that's most important point. Give it a url where you host your app.
+5. At the end you'll get a link that looks like [https://t.me/naval_clash_bot/play](https://t.me/naval_clash_bot/play) where **naval_clash_bot** is the name of your bot, and **app** is the name of your app.
+
 ## Client overview
 
 From the client side perspective of view it's just [TypeScript](https://www.typescriptlang.org/) + [React](https://react.dev/) + [Socket.IO](https://socket.io/).
@@ -151,6 +163,17 @@ One interesting thing that I'd like to mention here is **page responsiveness**. 
 And you can apply this units to anything, like element size, font size, border size and so on. So instead of changing page look discretely using traditional breakpoints, I use this new CSS units so interfaces kind of scales and adjusts to any resolution. Check this out:
 
 https://github.com/angrycoding/naval_clash_bot/assets/895042/44312f95-f7f5-461f-9496-6aa40b6a6a79
+
+## Some suggestions on how Telegram Mini App platform could be improved
+
+Here is the list of suggestions that I'd like to share with **Telegram team** in order to improve the platform (IMHO of course):
+
+- Missing [Navigation.share API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/share). This thing could possibly let front-end developers to share some content from within the Mini App without having to close the window.
+- Using [manifest.json](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json), there is already a thing called PWA (stands for Progressive Web Apps) and it uses manifest.json in order to adjust it's [settings](https://developer.mozilla.org/en-US/docs/Web/Manifest). This could potentially reduce the gap between building Telegram platform apps and PWA.
+- Besides that in manifest.json you can set preferred screen orientation (which is most of the time should be set to portrait IMHO), there is also one more [missing api](https://developer.mozilla.org/en-US/docs/Web/API/ScreenOrientation/lock) that allows developer to lock screen orientation in either portrait or landscape mode. It's important because for some of the applications it doesn't really make any sense to run in landscape for instance (cause it's just becomes too small).
+- There are no methods in Telegram Mini App API that could give developers more freedom on adjusting the applications's window. For example: hide title bar, ajust title bar (what if I'd like to provide localized title?).
+- Very strange? support on linux. Window has fixed size no matter what I do, but maybe it's just a problem with my OS.
+- Ability to create app without binding it to bot. I believe that for some of the apps this link can be useful but on the other hand, for some it's just useless. It's like you can create WebApp using BotFather, but why do you have to connect it to bot in case if your app doesn't have any functionality that could potentially be dedicated to the bot.
 
 ## Server overview
 
