@@ -1,21 +1,21 @@
-import useGameState from "./hooks/useGameState";
 import { GameStatus } from "./types/GameState";
 import PlaceShips from "./components/PlaceShips/PlaceShips";
 import Battle from "./components/Battle/Battle";
-import Loading from "./components/Loading/Loading";
 import Replay from "./components/Replay/Replay";
 import GameOver from "./components/GameOver/GameOver";
+import { useGameState } from "./utils/useGameState";
+
 
 
 const Application = () => {
-	
+
 	const gameState = useGameState();
-	
-	if (gameState === 0) {
-		return <Loading />;
+
+	if (!gameState.watchDog) {
+		return <GameOver />
 	}
 
-	if (gameState === undefined) {
+	if (gameState.status === GameStatus.PLACESHIPS) {
 		return <PlaceShips />;
 	}
 
@@ -24,12 +24,7 @@ const Application = () => {
 	}
 
 	if (gameState.status === GameStatus.WAITING_FOR_REPLAY) {
-		return <Replay gameState={gameState} />
-	}
-
-
-	if (gameState.status === GameStatus.WAITING_FOR_PLAY) {
-		return <PlaceShips gameState={gameState} />;
+		return <Replay />
 	}
 
 

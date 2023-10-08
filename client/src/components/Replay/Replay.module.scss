@@ -1,6 +1,5 @@
-.textWithButtons {
+.text {
 	display: flex;
-	pointer-events: all;
 	flex-direction: column;
 	position: absolute;
 	top: 0px;
@@ -8,8 +7,6 @@
 	right: 0px;
 	bottom: 0px;
 	border: 8cqmin solid transparent;
-
-
 	& > *:first-child {
 		flex: 1;
 		display: flex;
@@ -17,17 +14,12 @@
 		align-items: center;
 		justify-content: center;
 		gap: 2cqmin;
-		& > *:nth-child(1) {
-			font-size: 10cqmin;
+		& > *:first-child {
+			font-size: 8cqmin;
 		}
-		& > *:nth-child(2) {
-			font-size: 5cqmin;
+		& > *:nth-child(3) {
+			font-size: 150%;
+			word-break: break-all;
 		}
-	}
-
-	& > *:last-child {
-		gap: 4cqh;
-		display: flex;
-		flex-direction: column;
 	}
 }

@@ -1,0 +1,30 @@
+.modal {
+	pointer-events: all;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	align-content: center;
+	background-color: rgba(white, 0.6);
+	backdrop-filter: blur(2px);
+}
+
+.modal > *:nth-child(1) {
+	border: 5cqmin solid transparent;
+}
+
+.modal > *:nth-child(2) {
+	border-left: 4px solid currentColor;
+	border-bottom: 4px solid currentColor;
+	position: absolute;
+	padding: 6px;
+	top: 0px;
+	right: 0px;
+	border-bottom-left-radius: 10px;
+	padding-bottom: 4px;
+	padding-top: 4px;
+}

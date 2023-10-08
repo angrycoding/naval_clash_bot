@@ -4,23 +4,38 @@ import styles from './Button.module.scss';
 import {playSound} from '../../utils/playSound';
 import foo from './button-46.mp3';
 import { CSSProperties } from 'react';
+import Counter from '../Counter/Counter';
+import formatTime from '../../utils/formatTime';
+import i18n from '../../utils/i18n';
 
 interface Props {
 	children?: any;
-	small?: boolean;
 	disabled?: boolean;
 	style?: CSSProperties;
 	onClick?: () => void;
+	timeLeft?: any;
 }
 
 const Button = (props: Props) => {
-	return <div className={clsx(styles.outer, props.disabled && styles.disabled, props.small && styles.small)} style={props.style}>
+	
+	const { timeLeft } = props;
+
+	return <div className={clsx(styles.outer, props.disabled && styles.disabled)} style={props.style}>
 		<Border>
 			<div className={styles.inner} onClick={() => {
 				playSound(foo);
 				props?.onClick?.()
 			}}>
 				{props.children}
+
+				{(Number.isInteger(timeLeft) && timeLeft > 0) && (
+					<Counter ms={timeLeft} onRender={s => (
+						<div className={styles.timer}>
+							({i18n('WAITING_FOR')}{' '}{formatTime(s)})
+						</div>
+					)} />
+				)}
+
 			</div>
 		</Border>
 	</div>

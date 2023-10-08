@@ -2,7 +2,7 @@ import React from "react";
 
 class Counter extends React.Component<{
 	ms: number,
-	onRender: (s: number) => any
+	onRender?: (s: number) => any
 }> {
 
 	startTime: number = 0;
@@ -21,11 +21,13 @@ class Counter extends React.Component<{
 	doUpdate = () => {
 		if (!this.isAttached) return;
 		this.forceUpdate();
-		setTimeout(this.doUpdate, 450);
+		setTimeout(this.doUpdate, 200);
 	}
 
 	render() {
-		return this.props.onRender(Math.max(Math.ceil( (this.props.ms - Date.now()) / 1000  ), 0))
+		const { onRender } = this.props;
+		const result = Math.max(Math.ceil( (this.props.ms - Date.now()) / 1000  ), 0);
+		return onRender ? onRender(result) : result;
 	}
 
 }

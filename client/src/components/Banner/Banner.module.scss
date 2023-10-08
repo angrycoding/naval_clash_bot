@@ -1,0 +1,59 @@
+.banner {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+
+
+
+	&::before {
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		right: 0px;
+		bottom: 0px;
+		content: '';
+		background-color: rgba(white, 0.8);
+		backdrop-filter: blur(2px);
+	}
+
+	&::after {
+		content: '';
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		right: 0px;
+		bottom: 0px;
+		mask-size: 80%;
+		mask-repeat: no-repeat;
+		mask-position: bottom;
+		background-color: currentColor;
+		opacity: 0.9;
+		mask-position: center;
+	}
+
+}
+
+.sad::after {
+	mask-image: url('./sad.svg');
+}
+
+.sailor::after {
+	mask-image: url('./sailor.svg');
+}
+
+.slow::after {
+	mask-image: url('./turtle.svg');
+	mask-size: 70%;
+	transform: scaleX(-1);
+}
+
+.gameOver {
+	font-size: 7cqmin;
+	padding: 10%;
+	display: flex;
+	flex-direction: column;
+	gap: 6cqmin;
+	pointer-events: all;
+}

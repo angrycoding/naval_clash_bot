@@ -1,52 +1,52 @@
-.wrapper {
-	position: absolute;
-	top: 0px;
-	bottom: 0px;
-	left: 0px;
-	right: 0px;
-	display: flex;
-	padding: 20px;
-	gap: 32px;
+.text:has(:last-child:nth-child(1)) {
+	& > *:nth-child(1) {
+		font-size: 150%;
+	}
 }
 
-.fieldWrapper {
-	flex: 1;
-	position: relative;
-	display: flex;
-	justify-content: center;
-	align-content: center;
-	container-type: size;
+.text:has(:last-child:nth-child(2)) {
+	& > *:nth-child(1) {
+		font-size: 200%;
+	}
 }
 
-.ready .fieldWrapper {
-	opacity: 0.6;
+
+
+.text:has(:last-child:nth-child(3)) {
+	& > *:nth-child(2) {
+		font-size: 200%;
+		word-break: break-all;
+	}
 }
 
-.buttons {
-	gap: 20px;
+
+.textWithButtons {
 	display: flex;
 	flex-direction: column;
-}
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	border: 8cqmin solid transparent;
 
-@media screen and (orientation:portrait) {
-	.wrapper {
+
+	& > *:first-child {
+		flex: 1;
+		display: flex;
 		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 2cqmin;
+		font-size: 6cqmin;
+		span {
+			word-break: break-all;
+		}
 	}
-	.field {
-		margin-left: auto;
-		margin-right: auto;
-	}
-}
 
-
-@media screen and (orientation:landscape) {
-	.wrapper {
-		flex-direction: row;
-	}
-	.fieldWrapper {
-		align-items: flex-end;
-	}
-	.buttons {
-		justify-content: flex-end;
+	& > *:last-child {
+		gap: 4cqh;
+		display: flex;
+		flex-direction: column;
 	}
 }

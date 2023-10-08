@@ -32,6 +32,7 @@ $shipBorderRadius: 3px;
 		max-height: $letterSize;
 		min-height: $letterSize;
 		text-align: center;
+		font-weight: 400;
 	}
 }
 
@@ -42,6 +43,7 @@ $shipBorderRadius: 3px;
 	margin-right: $padding;
 	& > * {
 		flex: 1;
+		font-weight: 400;
 		max-width: $letterSize;
 		min-width: $letterSize;
 		display: flex;

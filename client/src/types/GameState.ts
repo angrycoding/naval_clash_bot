@@ -1,22 +1,19 @@
 export enum GameStatus {
 	ACTIVE,
 	WAITING_FOR_REPLAY,
-	WAITING_FOR_PLAY,
-	FINISHED,
+	PLACESHIPS,
 }
 
 interface GameState {
 
+	replayId: string;
 	status: GameStatus;
 	watchDog: number;
-	
-
-	id: string;
 	whosTurn: string;
 
 	users: {
 		[userId: string]: {
-			replay: boolean,
+			confirm?: boolean;
 			userName: string;
 			map: {[index: number]: number}
 		}

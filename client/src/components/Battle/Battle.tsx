@@ -3,15 +3,15 @@ import styles from './Battle.module.scss';
 import Field from '../Field/Field';
 import socketIO from '../../utils/Socket';
 import getTempUserId from '../../utils/getTempUserId';
-import GameState from '../../types/GameState';
-import { Map, fillBorders, getShipId, isFresh, isHitShip, isShip } from '../../utils/mapUtils';
+import GameState, { GameStatus } from '../../types/GameState';
+import { Map, fillBorders, getShipId, isFresh, isGameOver, isHitShip, isShip } from '../../utils/mapUtils';
 import Layout from '../Layout/Layout';
 import theme from '../../index.module.scss';
 import Counter from '../Counter/Counter';
+import { setGameState } from '../../utils/useGameState';
+import Settings from '../../Settings';
 
 const myUserId = getTempUserId();
-
-const SHOW_TIMER = 10;
 
 const Battle = (props: { gameState: GameState }) => {
 
@@ -20,44 +20,82 @@ const Battle = (props: { gameState: GameState }) => {
 	const enemyUserId = Object.keys(users).find(k => k !== myUserId) || '';
 	const enemyName = users[enemyUserId].userName || '';
 	const freshMap = isFresh(users[enemyUserId].map);
-
+	const isMyTurn = (gameState.whosTurn === myUserId);
+	const myMap = users[myUserId].map;
 	const enemyMap = users[enemyUserId].map;
 
-	const [ enemyMapOverlay, setEnemyMapOverlay ] = useState<Map>({});
 
-	const [ whosTurn, setWhosTurn ] = useState(gameState.whosTurn);
-	useEffect(() => setWhosTurn(gameState.whosTurn), [gameState.whosTurn]);
+	useEffect(() => {
+		socketIO.on('shot', onEnemyShot);
+		return () => { socketIO.off('shot', onEnemyShot) }
+	})
 
+	const onEnemyShot = (fromUserId: string, index: number) => {
+		
+		if (isMyTurn || fromUserId !== enemyUserId) return;
 
-	const onHit = (index: number) => {
-
-		socketIO.emit('shot', index);
-
-		const map: Map = {
-			...enemyMap,
-			...enemyMapOverlay
+		const entity = myMap[index];
+		
+		if (!entity) {
+			myMap[index] = entity | 2;
+			gameState.whosTurn = myUserId;
+			fillBorders(myMap);
+		} else if (isShip(entity) && !isHitShip(entity)) {
+			myMap[index] = getShipId(entity) << 2 | 1;
+			fillBorders(myMap);
 		}
 
-		const entity = map[index];
 
+		gameState.watchDog = Date.now() + (Settings.waitForShotS * 1000);
+		setGameState(gameState);
+
+		if (isGameOver(myMap)) {
+			setTimeout(() => {
+				gameState.watchDog = Date.now() + (Settings.waitForReplayS * 1000);
+				gameState.status = GameStatus.WAITING_FOR_REPLAY;
+				setGameState(gameState);
+			}, 0);
+		}
+
+
+
+	}
+
+	const onMyShot = (index: number) => {
+
+		const entity = enemyMap[index];
+		
 		if (!entity) {
-			map[index] = entity | 2;
-			setWhosTurn(enemyUserId);
+			socketIO.emit('shot', myUserId, enemyUserId, index);
+			enemyMap[index] = entity | 2;
+			gameState.whosTurn = enemyUserId;
+			fillBorders(enemyMap);
 		}
 
 		else if (isShip(entity) && !isHitShip(entity)) {
-			map[index] = getShipId(entity) << 2 | 1;
+			socketIO.emit('shot', myUserId, enemyUserId, index);
+			enemyMap[index] = getShipId(entity) << 2 | 1;
+			fillBorders(enemyMap);
 		}
 
-		fillBorders(map);
-		setEnemyMapOverlay(map);
+		gameState.watchDog = Date.now() + (Settings.waitForShotS * 1000);
+		setGameState(gameState);
+
+		
+		if (isGameOver(enemyMap)) {
+			setTimeout(() => {
+				gameState.watchDog = Date.now() + (Settings.waitForReplayS * 1000);
+				gameState.status = GameStatus.WAITING_FOR_REPLAY;
+				setGameState(gameState);
+			}, 0);
+		}
+		
 	}
 
-	const isMyTurn = (whosTurn === myUserId);
 
 	return <Layout field1={
 		<Field
-			map={users[myUserId].map}
+			map={{...myMap}}
 			background={isMyTurn ? theme.redBg : undefined}
 			status={<>
 
@@ -66,7 +104,7 @@ const Battle = (props: { gameState: GameState }) => {
 
 					<Counter ms={watchDog} onRender={secondsLeft => {
 
-						if (secondsLeft <= SHOW_TIMER) {
+						if (secondsLeft <= Settings.waitForShotShowS) {
 							return <div className={styles.timer}>
 								{secondsLeft}
 							</div>
@@ -84,13 +122,8 @@ const Battle = (props: { gameState: GameState }) => {
 		<Field
 			reverseLegend={true}
 			hideAliveShips={true}
-			
-			map={{
-				...enemyMap,
-				...enemyMapOverlay
-			}}
-
-			onHit={isMyTurn ? onHit : undefined}
+			map={{...enemyMap}}
+			onHit={isMyTurn ? onMyShot : undefined}
 			background={isMyTurn ? undefined : theme.redBg}
 
 			status={
@@ -98,7 +131,7 @@ const Battle = (props: { gameState: GameState }) => {
 
 
 
-					if (isMyTurn && secondsLeft <= SHOW_TIMER) {
+					if (isMyTurn && secondsLeft <= Settings.waitForShotShowS) {
 						return <div className={styles.timer}>
 							{secondsLeft}
 						</div>
