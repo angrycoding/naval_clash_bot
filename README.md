@@ -133,6 +133,21 @@ From the CSS perspective of view, project uses [Sass modules](https://sass-lang.
 
 In order to make use **Telegram Mini App** platform features ([see full documentation here](https://core.telegram.org/bots/webapps)) there are few wrappers made (you can find them [here](https://github.com/angrycoding/naval_clash_bot/blob/main/client/src/utils/TelegramApi.ts)).
 
+### Responsive design
+
+One interesting thing that I'd like to mention here is **page responsiveness**. So we've got **Telegram Mini Apps platform** and by using it you can expect that your app will run on any device with basically any resolution. Usual solution here is to use so called "breakpoints". Here I decided to take a bit different approach: [CSS Container queries](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_container_queries). In simple words it introduces new CSS units:
+
+- cqw: 1% of a query container's width
+- cqh: 1% of a query container's height
+- cqi: 1% of a query container's inline size
+- cqb: 1% of a query container's block size
+- cqmin: The smaller value of either cqi or cqb
+- cqmax: The larger value of either cqi or cqb
+
+And you can apply this units to anything, like element size, font size, border size and so on. So instead of changing page look discretely using traditional breakpoints, I use this new CSS units so interfaces kind of scales and adjusts to any resolution. Check this out:
+
+https://github.com/angrycoding/naval_clash_bot/assets/895042/44312f95-f7f5-461f-9496-6aa40b6a6a79
+
 ## Server overview
 
 Server side code is written using [TypeScript](https://www.typescriptlang.org/), in order to run it locally (**only locally**, never do it on production, because it's very inefficient performance wise), I use [nodemon](https://nodemon.io/) in combination with the TypeScript compliler itself it gives us very simple way to compile all typescript stuff automatically when you change something in your sources. Besides that most notable part for backend is [Socket.IO](https://socket.io/), but that's obvious since it's already mentioned that it's used on the front-end side. So again, no rocket science here, just get yourself familiar with it by running it locally. Also check [makeBundle.js](https://github.com/angrycoding/naval_clash_bot/blob/main/server/makeBundle.js) that is responsible for producing "production" bundle using [Browserify](https://browserify.org/).
