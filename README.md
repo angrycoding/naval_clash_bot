@@ -4,7 +4,7 @@ Naval Clash a beloved childhood game for everyone. Now available on Telegram!
 
 ![output](https://github.com/angrycoding/naval_clash_bot/assets/895042/c8cd0dce-69d9-4965-954b-fbfec04ed482)
 
-## Project structure, running it locally
+## Project structure, running, building
 
 Project is separated in two folders: **client** where all client stuff lives obviously and **server** for the server side. Client and server both written in TypeScript. Server side code is reusing
 some parts of the client side code (i.e. shared code). Before starting developing, make sure that you check out the repo first:
@@ -56,6 +56,16 @@ yarn build
 
 This will compile all TypeScript files located in **server/src** and will produce one single bundle in **server/dist** (index.js) that you can run on your own dedicated server. This will also create
 **server/dist/pm2.json** file that you can use in combination with [PM2 process manager](https://pm2.keymetrics.io/), but of course feel free to run it manually if you wish so.
+
+### Building client and server altogether:
+
+There is pretty useful script that will let you to build client and server altogether at once, [check it out](https://github.com/angrycoding/naval_clash_bot/blob/main/build.sh):
+
+```
+./build.sh
+```
+
+This will run client build + server build and put everything into **dist** folder in the project root.
 
 ## Client overview
 
