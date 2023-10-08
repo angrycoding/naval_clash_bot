@@ -8,11 +8,6 @@ Play now here: https://t.me/naval_clash_bot/play
 
 Just in case if you have no idea what it is, then [here is some description](https://www.thesprucecrafts.com/the-basic-rules-of-battleship-411069)
 
-Screenshots of actual interface on mobile and desktop (linux):
-
-![Снимок экрана от 2023-10-09 00-14-56](https://github.com/angrycoding/naval_clash_bot/assets/895042/6ba1d426-74e9-40af-a1a9-1205c677c5eb)
-
-
 ## Project structure, running, building
 
 Project is separated in two folders: **client** where all client stuff lives obviously and **server** for the server side. Client and server both written in TypeScript. Server side code is reusing
