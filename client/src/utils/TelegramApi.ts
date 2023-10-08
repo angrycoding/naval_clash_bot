@@ -41,6 +41,11 @@ const getUserId = (): number => {
 	return (Number.isInteger(result) && result > 0 ? result : 0);
 }
 
+const getUserLocale = (): string => {
+	const result = Telegram?.WebApp?.initDataUnsafe?.user?.language_code;
+	return (typeof result === 'string' && result.trim() ? result : '');
+}
+
 const TelegramApi = {
 	expand,
 	getUserId,
@@ -48,6 +53,7 @@ const TelegramApi = {
 	getFirstName,
 	getStartParam,
 	setHeaderColor,
+	getUserLocale,
 	requestWriteAccess,
 	enableClosingConfirmation,
 	isTelegram: Boolean(typeof Telegram?.WebApp?.initDataUnsafe?.user === 'object')
