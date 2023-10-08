@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import GameState, { GameStatus } from "../../types/GameState";
-import getTempUserId from "../../utils/getTempUserId";
+import { useEffect } from "react";
+import { GameStatus } from "../../types/GameState";
+import { getTempUserId } from "../../utils/tempUserId";
 import Field from "../Field/Field";
 import Layout from "../Layout/Layout";
 import socketIO from "../../utils/Socket";
@@ -11,10 +11,10 @@ import Settings from "../../Settings";
 import { setGameState, useGameState } from "../../utils/useGameState";
 import styles from './Replay.module.scss';
 
-const myUserId = getTempUserId();
 
 const Replay = () => {
 
+	const myUserId = getTempUserId();
 	const gameState = useGameState();
 	const { users, watchDog, whosTurn, replayId } = gameState;
 	const winner = (whosTurn === myUserId);

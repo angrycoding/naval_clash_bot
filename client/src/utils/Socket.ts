@@ -4,7 +4,6 @@ import ClientToServerEvents from '../types/ClientToServerEvents';
 import Settings from '../Settings';
 import userLocale from './userLocale';
 import TelegramApi from './TelegramApi';
-import getTempUserId from './getTempUserId';
 
 declare const isProduction: boolean;
 
@@ -15,7 +14,6 @@ const socketIO: Socket<ServerToClientEvents, ClientToServerEvents> = io((
 ), {
 	auth: {
 		locale: userLocale,
-		userId: getTempUserId(),
 		userName: TelegramApi.getFirstName() || new URLSearchParams(window.location.search).get('name'),
 	},
 	path: Settings.socketIoPath,

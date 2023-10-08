@@ -1,5 +1,5 @@
 import { GameStatus } from "../../types/GameState";
-import getTempUserId from "../../utils/getTempUserId";
+import { getTempUserId, refreshTempUserId } from "../../utils/tempUserId";
 import i18n from "../../utils/i18n";
 import { setGameState, useGameState } from "../../utils/useGameState";
 import Banner from "../Banner/Banner";
@@ -8,11 +8,10 @@ import Field from "../Field/Field"
 import Layout from "../Layout/Layout"
 import styles from './GameOver.module.scss'
 
-const myUserId = getTempUserId();
 
 const PlayAgainButton = () => (
 	<Button onClick={() => {
-		// REFRESH TEMP USER ID SOMEHOW
+		refreshTempUserId();
 		setGameState(undefined)
 	}}>{i18n('PLAY_AGAIN')}</Button>
 
@@ -20,6 +19,7 @@ const PlayAgainButton = () => (
 
 const GameOver = () => {
 
+	const myUserId = getTempUserId();
 	const gameState = useGameState();
 	const users = (gameState.users || {});
 	const isMyTurn = (gameState.whosTurn === myUserId);

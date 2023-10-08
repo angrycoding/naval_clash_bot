@@ -1,20 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import styles from './Battle.module.scss';
 import Field from '../Field/Field';
 import socketIO from '../../utils/Socket';
-import getTempUserId from '../../utils/getTempUserId';
+import { getTempUserId } from '../../utils/tempUserId';
 import GameState, { GameStatus } from '../../types/GameState';
-import { Map, fillBorders, getShipId, isFresh, isGameOver, isHitShip, isShip } from '../../utils/mapUtils';
+import { fillBorders, getShipId, isFresh, isGameOver, isHitShip, isShip } from '../../utils/mapUtils';
 import Layout from '../Layout/Layout';
 import theme from '../../index.module.scss';
 import Counter from '../Counter/Counter';
 import { setGameState } from '../../utils/useGameState';
 import Settings from '../../Settings';
 
-const myUserId = getTempUserId();
 
 const Battle = (props: { gameState: GameState }) => {
 
+	const myUserId = getTempUserId();
 	const { gameState } = props;
 	const { users } = gameState;
 	const enemyUserId = Object.keys(users).find(k => k !== myUserId) || '';

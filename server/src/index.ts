@@ -96,8 +96,8 @@ const startBattle = (socket1, socket2, whosTurn?: string) => {
 
 socketIO.on('connection', async(socket) => {
 
-	socket.data.userId = getNonEmptyString(socket?.handshake?.auth?.userId);
-	if (!socket.data.userId) return closeSocket(socket);
+	// socket.data.userId = getNonEmptyString(socket?.handshake?.auth?.userId);
+	// if (!socket.data.userId) return closeSocket(socket);
 	
 	socket.data.userName = (() => {
 		let locale = getNonEmptyString(socket?.handshake?.auth?.locale).toLowerCase();
@@ -116,7 +116,7 @@ socketIO.on('connection', async(socket) => {
 
 		fromUserId = getNonEmptyString(fromUserId);
 		if (!fromUserId) return;
-		if (socket.data.userId !== fromUserId) return;
+		socket.data.userId = fromUserId;
 
 		replayId = getNonEmptyString(replayId);
 		withUserId = getNonEmptyString(withUserId);
@@ -162,7 +162,6 @@ socketIO.on('connection', async(socket) => {
 			toSocket.emit('shot', fromUserId, index);
 		}
 	});
-
 
 	socket.on('readyToReplayRequest', async(replayId: string, fromUserId: string, withUserId: string) => {
 		fromUserId = getNonEmptyString(fromUserId);

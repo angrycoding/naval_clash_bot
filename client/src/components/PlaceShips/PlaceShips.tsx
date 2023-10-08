@@ -8,18 +8,17 @@ import Layout from '../Layout/Layout';
 import Modal from '../Modal/Modal';
 import GameState from '../../types/GameState';
 import Counter from '../Counter/Counter';
-import getTempUserId from '../../utils/getTempUserId';
+import { getTempUserId } from '../../utils/tempUserId';
 import i18n from '../../utils/i18n';
 import { setGameState, useGameState } from '../../utils/useGameState';
 import Settings from '../../Settings';
 import formatTime from '../../utils/formatTime';
 import styles from './PlaceShips.module.scss'
 
-const myUserId = getTempUserId();
-
 
 const PlaceShips = () => {
 
+	const myUserId = getTempUserId();
 	const gameState = useGameState();
 	const [ myRandomMap, setMyRandomMap ] = useState<Map>(generateMap);
 	const [ enemyRandomMap, setEnemyRandomMap ] = useState<Map>(generateMap);
