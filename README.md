@@ -10,6 +10,7 @@ Author: https://www.linkedin.com/in/ruslanmatveev/
 
 Just in case if you have no idea what it is, then [here is some description](https://www.thesprucecrafts.com/the-basic-rules-of-battleship-411069)
 
+
 ## Project structure, running, building
 
 Project is separated in two folders: **client** where all client stuff lives obviously and **server** for the server side. Client and server both written in TypeScript. Server side code is reusing
@@ -18,6 +19,7 @@ some parts of the client side code (i.e. shared code). Before starting developin
 ```
 git clone git@github.com:angrycoding/naval_clash_bot.git
 ```
+
 
 ### Starting the client
 
@@ -28,6 +30,7 @@ yarn start
 ```
 
 Client side will start on port 3000, so now you should be able to open it in your web-browser (http://localhost:3000/)
+
 
 ### Building the client
 
@@ -40,6 +43,7 @@ yarn build
 ```
 
 Now just go to **client/dist** folder and see all build artefacts.
+
 
 ### Starting the server
 
@@ -54,6 +58,7 @@ yarn start
 This will start watching **server/src** folder and will recompile / restart backend whenever some change is made. By default server will start on port 3495, but you can adjust it
 if you change **socketIoPort** [here](https://github.com/angrycoding/naval_clash_bot/blob/main/client/src/Settings.ts).
 
+
 ### Building the server
 
 Just go to **server** directory and run:
@@ -67,6 +72,7 @@ yarn build
 This will compile all TypeScript files located in **server/src** and will produce one single bundle in **server/dist** (index.js) that you can run on your own dedicated server. This will also create
 **server/dist/pm2.json** file that you can use in combination with [PM2 process manager](https://pm2.keymetrics.io/), but of course feel free to run it manually if you wish so.
 
+
 ### Building client and server altogether
 
 There is pretty useful script that will let you to build client and server altogether at once, [check it out](https://github.com/angrycoding/naval_clash_bot/blob/main/build.sh):
@@ -77,6 +83,7 @@ There is pretty useful script that will let you to build client and server altog
 
 (Make sure that you install all the dependencies first before running it)
 This will run client build + server build and put everything into **dist** folder in the project root.
+
 
 ### Note about setting it up on real server
 
@@ -128,6 +135,7 @@ http {
 
 But of course, if you find all this too complicated, then you can stil do it your own way.
 
+
 ## Setup from Telegram side
 
 Here is what you have to do in order to recreate something similar:
@@ -137,6 +145,7 @@ Here is what you have to do in order to recreate something similar:
 3. You'll be asked to choose the bot that you wan't to bind this new app with. Choose the one that you've just created on step 1.
 4. After few more questions, you'll be asked to give app url, that's most important point. Give it a url where you host your app.
 5. At the end you'll get a link that looks like [https://t.me/naval_clash_bot/play](https://t.me/naval_clash_bot/play) where **naval_clash_bot** is the name of your bot, and **app** is the name of your app.
+
 
 ## Client overview
 
@@ -148,6 +157,7 @@ custom configuration [here](https://github.com/angrycoding/naval_clash_bot/blob/
 From the CSS perspective of view, project uses [Sass modules](https://sass-lang.com/documentation/modules/). So no rocket science here, just couple of well-known libraries along with React.
 
 In order to make use **Telegram Mini App** platform features ([see full documentation here](https://core.telegram.org/bots/webapps)) there are few wrappers made (you can find them [here](https://github.com/angrycoding/naval_clash_bot/blob/main/client/src/utils/TelegramApi.ts)).
+
 
 ### Responsive design
 
@@ -164,6 +174,12 @@ And you can apply this units to anything, like element size, font size, border s
 
 https://github.com/angrycoding/naval_clash_bot/assets/895042/44312f95-f7f5-461f-9496-6aa40b6a6a79
 
+
+## Server overview
+
+Server side code is written using [TypeScript](https://www.typescriptlang.org/), in order to run it locally (**only locally**, never do it on production, because it's very inefficient performance wise), I use [nodemon](https://nodemon.io/) in combination with the TypeScript compliler itself it gives us very simple way to compile all typescript stuff automatically when you change something in your sources. Besides that most notable part for backend is [Socket.IO](https://socket.io/), but that's obvious since it's already mentioned that it's used on the front-end side. So again, no rocket science here, just get yourself familiar with it by running it locally. Also check [makeBundle.js](https://github.com/angrycoding/naval_clash_bot/blob/main/server/makeBundle.js) that is responsible for producing "production" bundle using [Browserify](https://browserify.org/).
+
+
 ## Some suggestions on how Telegram Mini App platform could be improved
 
 Here is the list of suggestions that I'd like to share with **Telegram team** in order to improve the platform (IMHO of course):
@@ -174,7 +190,3 @@ Here is the list of suggestions that I'd like to share with **Telegram team** in
 - There are no methods in Telegram Mini App API that could give developers more freedom on adjusting the applications's window. For example: hide title bar, ajust title bar (what if I'd like to provide localized title?).
 - Very strange? support on linux. Window has fixed size no matter what I do, but maybe it's just a problem with my OS.
 - Ability to create app without binding it to bot. I believe that for some of the apps this link can be useful but on the other hand, for some it's just useless. It's like you can create WebApp using BotFather, but why do you have to connect it to bot in case if your app doesn't have any functionality that could potentially be dedicated to the bot.
-
-## Server overview
-
-Server side code is written using [TypeScript](https://www.typescriptlang.org/), in order to run it locally (**only locally**, never do it on production, because it's very inefficient performance wise), I use [nodemon](https://nodemon.io/) in combination with the TypeScript compliler itself it gives us very simple way to compile all typescript stuff automatically when you change something in your sources. Besides that most notable part for backend is [Socket.IO](https://socket.io/), but that's obvious since it's already mentioned that it's used on the front-end side. So again, no rocket science here, just get yourself familiar with it by running it locally. Also check [makeBundle.js](https://github.com/angrycoding/naval_clash_bot/blob/main/server/makeBundle.js) that is responsible for producing "production" bundle using [Browserify](https://browserify.org/).
