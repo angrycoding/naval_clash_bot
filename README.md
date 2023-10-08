@@ -190,3 +190,13 @@ Here is the list of suggestions that I'd like to share with **Telegram team** in
 - There are no methods in Telegram Mini App API that could give developers more freedom on adjusting the applications's window. For example: hide title bar, ajust title bar (what if I'd like to provide localized title?).
 - Very strange? support on linux. Window has fixed size no matter what I do, but maybe it's just a problem with my OS.
 - Ability to create app without binding it to bot. I believe that for some of the apps this link can be useful but on the other hand, for some it's just useless. It's like you can create WebApp using BotFather, but why do you have to connect it to bot in case if your app doesn't have any functionality that could potentially be dedicated to the bot.
+- Ability to somehow disable this "minifying" / drawer thing, that allows your app to be shown on this small window. For some of the apps this can be useful while for the others it looks like this:
+- 
+![photo_2023-10-09_00-51-47](https://github.com/angrycoding/naval_clash_bot/assets/895042/be1b8482-7179-4deb-b5e6-4e9e60de8709)
+
+Or even smaller:
+
+![photo_2023-10-09_00-52-19](https://github.com/angrycoding/naval_clash_bot/assets/895042/a9e89ec4-4199-426a-8887-ee006846807d)
+
+But if you think that's already too small, then you're wrong, because it can get even smaller in case if you open your Mini App from bot's interface menu (cause then input bar will be added at bottom which is also takes additional space).
+
