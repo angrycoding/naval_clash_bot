@@ -209,7 +209,7 @@ const generateMap = (): Map => {
 	const ships: DOMPoint[] = [];
 	let matrix = createMatrix();
 
-	return { 0: (1 << 2 | 0) }
+	// return { 0: (1 << 2 | 0) }
 
 	iteration: for (;;) {
 		ships.splice(0, Infinity);

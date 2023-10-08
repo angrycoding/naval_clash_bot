@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import GameState, { GameStatus } from "../types/GameState";
+import beep from './beep.mp3';
+import { playSound } from "./playSound";
 
 const DEFAULT_GAME_STATE: GameState = {
 	replayId: '',
@@ -10,21 +12,46 @@ const DEFAULT_GAME_STATE: GameState = {
 	}
 }
 
-
 let globalGameState = DEFAULT_GAME_STATE;
 
-setInterval(() => {
-	const { watchDog } = globalGameState;
-	if (watchDog === Infinity || watchDog <= 0) return;
 
-	const secondsLeft = Math.ceil( (watchDog - Date.now()) / 1000  );
+export const useSecondsLeft = () => {
+
+	const forceUpdate = (() => {
+		const setForceUpdate = useState<any>(String(Math.random()))[1];
+		return () => setForceUpdate(String(Math.random()));
+	})();
+
+	useEffect(() => {
+		document.addEventListener('counter', forceUpdate);
+		return () => document.removeEventListener('counter', forceUpdate);
+	}, []);
+
+	return Math.max(Math.ceil((globalGameState.watchDog - Date.now()) / 1000), 0);
 	
-	if (secondsLeft <= 0) {
-		globalGameState.watchDog = 0;
-		setGameState(globalGameState);
-	}
+}
 
-}, 250);
+(() => {
+
+	let prevValue = -1;
+
+	setInterval(() => {
+		const { watchDog } = globalGameState;
+		if (watchDog === Infinity || watchDog <= 0) return;
+		const secondsLeft = Math.ceil((watchDog - Date.now()) / 1000);
+		if (secondsLeft !== prevValue) {
+			prevValue = secondsLeft;
+			document.dispatchEvent(new Event('counter'));
+			if (secondsLeft && secondsLeft <= 5) playSound(beep);
+		}
+		if (secondsLeft <= 0) {
+			globalGameState.watchDog = 0;
+			setGameState(globalGameState);
+		}
+	}, 250);
+
+})();
+
 
 
 export const setGameState = (gameState?: Partial<GameState>) => {

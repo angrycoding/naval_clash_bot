@@ -61,7 +61,7 @@ const Replay = () => {
 						<div>{i18n('PLAY_MORE_WITH')}</div>
 						<div>{enemyName}?</div>
 					</div>
-					<Button disabled={iConfirm} onClick={readyToReplayRequest} timeLeft={watchDog}>
+					<Button disabled={iConfirm} onClick={readyToReplayRequest} showTime={true}>
 						{i18n('PLAY_ONE_MORE_TIME')}
 					</Button>
 				</div>

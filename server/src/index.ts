@@ -24,6 +24,11 @@ const socketIO = new Server<ClientToServerEvents, ServerToClientEvents, {}, Sock
 	}
 });
 
+const getRandomUserName = (locale: string) => {
+	const names = (locale === 'en' ? Settings.randomNamesEn : Settings.randomNamesRu);
+	const ranks = (locale === 'en' ? Settings.randomRanksEn : Settings.randomRanksRu);
+	return [names[getRandomInt(0, names.length - 1)], ranks[getRandomInt(0, ranks.length - 1)]].join(' ')
+}
 
 const cleanupMissedShots = () => {
 	for (const userId in MISSED_SHOTS) {
@@ -98,11 +103,7 @@ socketIO.on('connection', async(socket) => {
 		let locale = getNonEmptyString(socket?.handshake?.auth?.locale).toLowerCase();
 		locale = ['en', 'ru'].includes(locale) ? locale : 'en';
 		const result = getNonEmptyString(socket?.handshake?.auth?.userName);
-		return (
-			result ? result : 
-			locale === 'ru' ? Settings.defaultUserNameRu :
-			Settings.defaultUserNameEn
-		);
+		return (result ? result : getRandomUserName(locale));
 	})();
 
 	while (MISSED_SHOTS[socket.data.userId]?.length) {

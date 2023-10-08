@@ -8,8 +8,43 @@ const Settings = {
 	telegramBotToken: "5847973427:AAGb4RCSqoaeaDW6WL-H9z1ubKUdp5-txCQ",
 	telegramBotRequestTimeoutMs: 1000,
 
-	defaultUserNameEn: 'Vladimir Sailor',
-	defaultUserNameRu: 'Владимир Моряк',
+	randomNamesEn: [
+		'Vladimir',
+		'Mikhail',
+		'Dmitriy',
+		'Pavel',
+		'Alexey',
+		'Ruslan',
+		'Ivan'
+	],
+
+	randomNamesRu: [
+		'Владимир',
+		'Михаил',
+		'Дмитрий',
+		'Павел',
+		'Алексей',
+		'Руслан',
+		'Иван'
+	],
+
+	randomRanksEn: [
+		'Sailor',
+		'Shipboy',
+		'Skipper',
+		'Captain',
+		'Boatswain',
+		'Navigator'
+	],
+
+	randomRanksRu: [
+		'Моряк',
+		'Юнга',
+		'Шкипер',
+		'Капитан',
+		'Боцман',
+		'Штурман'
+	],
 
 	// ожидание следующего хода
 	waitForShotS: 30,

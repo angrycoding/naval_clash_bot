@@ -16,7 +16,7 @@ const myUserId = getTempUserId();
 const Battle = (props: { gameState: GameState }) => {
 
 	const { gameState } = props;
-	const { users, watchDog } = gameState;
+	const { users } = gameState;
 	const enemyUserId = Object.keys(users).find(k => k !== myUserId) || '';
 	const enemyName = users[enemyUserId].userName || '';
 	const freshMap = isFresh(users[enemyUserId].map);
@@ -102,7 +102,7 @@ const Battle = (props: { gameState: GameState }) => {
 				
 				{!isMyTurn && (
 
-					<Counter ms={watchDog} onRender={secondsLeft => {
+					<Counter onRender={secondsLeft => {
 
 						if (secondsLeft <= Settings.waitForShotShowS) {
 							return <div className={styles.timer}>
@@ -127,7 +127,7 @@ const Battle = (props: { gameState: GameState }) => {
 			background={isMyTurn ? undefined : theme.redBg}
 
 			status={
-				<Counter ms={watchDog} onRender={secondsLeft => {
+				<Counter onRender={secondsLeft => {
 
 
 

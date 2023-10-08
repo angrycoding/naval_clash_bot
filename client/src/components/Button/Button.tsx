@@ -13,14 +13,11 @@ interface Props {
 	disabled?: boolean;
 	style?: CSSProperties;
 	onClick?: () => void;
-	timeLeft?: any;
+	showTime?: boolean;
 }
 
-const Button = (props: Props) => {
-	
-	const { timeLeft } = props;
-
-	return <div className={clsx(styles.outer, props.disabled && styles.disabled)} style={props.style}>
+const Button = (props: Props) => (
+	<div className={clsx(styles.outer, props.disabled && styles.disabled)} style={props.style}>
 		<Border>
 			<div className={styles.inner} onClick={() => {
 				playSound(foo);
@@ -28,10 +25,10 @@ const Button = (props: Props) => {
 			}}>
 				{props.children}
 
-				{(Number.isInteger(timeLeft) && timeLeft > 0) && (
-					<Counter ms={timeLeft} onRender={s => (
+				{props.showTime && (
+					<Counter onRender={secondsLeft => (
 						<div className={styles.timer}>
-							({i18n('WAITING_FOR')}{' '}{formatTime(s)})
+							({i18n('WAITING_FOR')}{' '}{formatTime(secondsLeft)})
 						</div>
 					)} />
 				)}
@@ -39,6 +36,6 @@ const Button = (props: Props) => {
 			</div>
 		</Border>
 	</div>
-}
+);
 
 export default Button;

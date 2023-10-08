@@ -81,7 +81,7 @@ const PlaceShips = () => {
 		return <Layout field1={
 			<Field map={myRandomMap} status={<Modal></Modal>} />
 		} field2={
-			<Field map={enemyRandomMap} status={<Modal>
+			<Field map={enemyRandomMap} reverseLegend={true} status={<Modal>
 				<div className={styles.text}>
 					<ThreeDots>{i18n('WAITING_ENEMY')}</ThreeDots>
 				</div>
@@ -94,14 +94,11 @@ const PlaceShips = () => {
 		return <Layout field1={
 			<Field map={myRandomMap} status={<Modal></Modal>} />
 		} field2={
-			<Field map={enemyRandomMap} status={<Modal>
+			<Field map={enemyRandomMap} reverseLegend={true} status={<Modal>
 				<div className={styles.text}>
 					<div>{i18n('WAITING_ENEMY')}</div>
 					{enemyName && <div>{enemyName}</div>}
-					<Counter
-						ms={gameState.watchDog}
-						onRender={s => <ThreeDots>{formatTime(s)}</ThreeDots>}
-					/>
+					<Counter onRender={s => <ThreeDots>{formatTime(s)}</ThreeDots>} />
 				</div>
 			</Modal>} />
 		} />
@@ -110,7 +107,7 @@ const PlaceShips = () => {
 	return <Layout field1={
 		<Field map={myRandomMap} />
 	} field2={
-		<Field map={{}} status={<Modal>
+		<Field map={{}} reverseLegend={true} status={<Modal>
 			<div className={styles.textWithButtons}>
 				<div>
 					{enemyUserId ? <>
@@ -121,7 +118,7 @@ const PlaceShips = () => {
 				
 				<div>
 					<div>
-						<Button onClick={startGameRequest} timeLeft={gameState.watchDog}>
+						<Button onClick={startGameRequest} showTime={true}>
 							{i18n('READY_TO_PLAY')}
 						</Button>
 					</div>
