@@ -4,6 +4,8 @@ Naval Clash a beloved childhood game for everyone. Now available on Telegram!
 
 ![output](https://github.com/angrycoding/naval_clash_bot/assets/895042/c8cd0dce-69d9-4965-954b-fbfec04ed482)
 
+Just in case if you have no idea what it is, then [here is some description](https://www.thesprucecrafts.com/the-basic-rules-of-battleship-411069)
+
 ## Project structure, running, building
 
 Project is separated in two folders: **client** where all client stuff lives obviously and **server** for the server side. Client and server both written in TypeScript. Server side code is reusing
