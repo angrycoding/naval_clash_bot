@@ -17,6 +17,7 @@ git clone git@github.com:angrycoding/naval_clash_bot.git
 
 ```
 cd client
+yarn
 yarn start
 ```
 
@@ -28,6 +29,7 @@ In order to produce client's production build just run:
 
 ```
 cd client
+yarn
 yarn build
 ```
 
@@ -39,6 +41,7 @@ Starting the server is also pretty simple:
 
 ```
 cd server
+yarn
 yarn start
 ```
 
@@ -51,6 +54,7 @@ Just go to **server** directory and run:
 
 ```
 cd server
+yarn
 yarn build
 ```
 
@@ -65,6 +69,7 @@ There is pretty useful script that will let you to build client and server altog
 ./build.sh
 ```
 
+(Make sure that you install all the dependencies first before running it)
 This will run client build + server build and put everything into **dist** folder in the project root.
 
 ### Note about setting it up on real server
@@ -126,3 +131,7 @@ standard Create React App setup without ["ejecting" it](https://create-react-app
 From the CSS perspective of view, project uses [Sass modules](https://sass-lang.com/documentation/modules/). So no rocket science here, just couple of well-known libraries along with React.
 
 In order to make use **Telegram Mini App** platform features ([see full documentation here](https://core.telegram.org/bots/webapps)) there are few wrappers made (you can find them [here](https://github.com/angrycoding/naval_clash_bot/blob/main/client/src/utils/TelegramApi.ts)).
+
+## Server overview
+
+Server side code is written using [TypeScript](https://www.typescriptlang.org/), in order to run it locally (**only locally**, never do it on production, because it's very inefficient performance wise), I use [nodemon](https://nodemon.io/) in combination with the TypeScript compliler itself it gives us very simple way to compile all typescript stuff automatically when you change something in your sources. Besides that most notable part for backend is [Socket.IO](https://socket.io/), but that's obvious since it's already mentioned that it's used on the front-end side. So again, no rocket science here, just get yourself familiar with it by running it locally.
