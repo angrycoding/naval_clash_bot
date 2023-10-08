@@ -154,7 +154,7 @@ And you can apply this units to anything, like element size, font size, border s
 
 https://github.com/angrycoding/naval_clash_bot/assets/895042/44312f95-f7f5-461f-9496-6aa40b6a6a79
 
-### Some suggestions on how Telegram Mini App platform could be improved
+## Some suggestions on how Telegram Mini App platform could be improved
 
 Here is the list of suggestions that I'd like to share with **Telegram team** in order to improve the platform (IMHO of course):
 
