@@ -128,6 +128,16 @@ http {
 
 But of course, if you find all this too complicated, then you can stil do it your own way.
 
+## Setup from Telegram side
+
+Here is what you have to do in order to recreate something similar:
+
+1. Contact [BotFather bot](https://t.me/BotFather) and ask him to create new bot.
+2. After that, open bot's menu and choose **/newapp**
+3. You'll be asked to choose the bot that you wan't to bind this new app with. Choose the one that you've just created on step 1.
+4. After few more questions, you'll be asked to give app url, that's most important point. Give it a url where you host your app.
+5. At the end you'll get a link that looks like [https://t.me/naval_clash_bot/play](https://t.me/naval_clash_bot/play) where **naval_clash_bot** is the name of your bot, and **app** is the name of your app.
+
 ## Client overview
 
 From the client side perspective of view it's just [TypeScript](https://www.typescriptlang.org/) + [React](https://react.dev/) + [Socket.IO](https://socket.io/).
