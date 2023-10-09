@@ -173,7 +173,9 @@ One interesting thing that I'd like to mention here is **page responsiveness**. 
 
 And you can apply this units to anything, like element size, font size, border size and so on. So instead of changing page look discretely using traditional breakpoints, I use this new CSS units so interfaces kind of scales and adjusts to any resolution. Check this out:
 
-https://github.com/angrycoding/naval_clash_bot/assets/895042/44312f95-f7f5-461f-9496-6aa40b6a6a79
+https://github.com/angrycoding/naval_clash_bot/assets/895042/3408e8d6-e35c-4f43-9181-2a67808e57c0
+
+[And here is the YouTube link](https://youtu.be/jMPWXFHTvCI) in case if above's doesn't open for you.
 
 
 ## Server overview
