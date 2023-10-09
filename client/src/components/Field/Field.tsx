@@ -4,12 +4,12 @@ import styles from './Field.module.scss';
 import theme from '../../index.module.scss'
 import getRandomInt from '../../utils/getRandomInt';
 
-import miss from './miss.wav';
+import miss from './miss.mp3';
 
-import hit1 from './hit1.wav';
-import hit2 from './hit2.wav';
-import hit3 from './hit3.wav';
-import hit4 from './hit4.wav';
+import hit1 from './hit1.mp3';
+import hit2 from './hit2.mp3';
+import hit3 from './hit3.mp3';
+import hit4 from './hit4.mp3';
 
 import h1 from './h1.png';
 import h2 from './h2.png';
