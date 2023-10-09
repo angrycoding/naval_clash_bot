@@ -6,7 +6,8 @@ Play now here: https://t.me/naval_clash_bot/play
 
 Author: https://www.linkedin.com/in/ruslanmatveev/
 
-![output](https://github.com/angrycoding/naval_clash_bot/assets/895042/c8cd0dce-69d9-4965-954b-fbfec04ed482)
+![output](https://github.com/angrycoding/naval_clash_bot/assets/895042/09038a85-48cc-4c53-b3e8-a64f45f0191c)
+
 
 Just in case if you have no idea what it is, then [here is some description](https://www.thesprucecrafts.com/the-basic-rules-of-battleship-411069)
 
