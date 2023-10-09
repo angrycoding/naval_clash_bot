@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import GameState, { GameStatus } from "../types/GameState";
 import beep from './beep.mp3';
 import { playSound } from "./playSound";
+import TelegramApi from "./TelegramApi";
 
 const DEFAULT_GAME_STATE: GameState = {
 	replayId: '',

@@ -2,6 +2,8 @@ export enum GameStatus {
 	ACTIVE,
 	WAITING_FOR_REPLAY,
 	PLACESHIPS,
+	I_GAVE_UP,
+	ENEMY_GAVE_UP
 }
 
 interface GameState {

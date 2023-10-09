@@ -7,7 +7,10 @@ import generateUniqueId from '../../client/src/utils/generateUniqueId';
 import { Map } from '../../client/src/utils/mapUtils';
 import getRandomInt from '../../client/src/utils/getRandomInt';
 
-const MISSED_SHOTS: {[userId: string]: Array<[number, string, number]>} = {};
+const MISSED_ACTIONS: {[userId: string]: Array<
+	[number, 'shot', string, number] |
+	[number, 'giveup', string, string]
+>} = {};
 
 interface SocketData {
 	map: Map;
@@ -30,19 +33,19 @@ const getRandomUserName = (locale: string) => {
 	return [names[getRandomInt(0, names.length - 1)], ranks[getRandomInt(0, ranks.length - 1)]].join(' ')
 }
 
-const cleanupMissedShots = () => {
-	for (const userId in MISSED_SHOTS) {
+const cleanupMissedActions = () => {
+	for (const userId in MISSED_ACTIONS) {
 
-		MISSED_SHOTS[userId] = MISSED_SHOTS[userId].filter(missedShot => {
-			return Date.now() - missedShot[0] <= 1000 * 60;
+		MISSED_ACTIONS[userId] = MISSED_ACTIONS[userId].filter(missedAction => {
+			return Date.now() - missedAction[0] <= 1000 * 60;
 		});
 
-		if (!MISSED_SHOTS[userId].length) {
-			delete MISSED_SHOTS[userId];
+		if (!MISSED_ACTIONS[userId].length) {
+			delete MISSED_ACTIONS[userId];
 		}
 
 	}
-	setTimeout(cleanupMissedShots, 1000 * 30);
+	setTimeout(cleanupMissedActions, 1000 * 30);
 }
 
 const getNonEmptyString = (value: any): string => {
@@ -106,9 +109,13 @@ socketIO.on('connection', async(socket) => {
 		return (result ? result : getRandomUserName(locale));
 	})();
 
-	while (MISSED_SHOTS[socket.data.userId]?.length) {
-		const item = MISSED_SHOTS[socket.data.userId].shift();
-		socket.emit('shot', item[1], item[2]);
+	while (MISSED_ACTIONS[socket.data.userId]?.length) {
+		const action = MISSED_ACTIONS[socket.data.userId].shift();
+		if (action[1] === 'shot') {
+			socket.emit('shot', action[2], action[3]);
+		} else if (action[2] === 'giveup') {
+			socket.emit('giveup', action[2], action[3]);
+		}
 	}
 
 
@@ -147,7 +154,6 @@ socketIO.on('connection', async(socket) => {
 
 	});
 
-
 	socket.on('shot', async(fromUserId: string, toUserId: string, index: number) => {
 		fromUserId = getNonEmptyString(fromUserId);
 		toUserId = getNonEmptyString(toUserId);
@@ -156,12 +162,26 @@ socketIO.on('connection', async(socket) => {
 		if (!Number.isInteger(index) || index < 0 || index > 99) return;
 		const toSocket = (await socketIO.fetchSockets()).find(s => s.data.userId === toUserId);
 		if (!toSocket) {
-			if (!MISSED_SHOTS[toUserId]) MISSED_SHOTS[toUserId] = [];
-			MISSED_SHOTS[toUserId].push([ Date.now(), fromUserId, index ]);
+			if (!MISSED_ACTIONS[toUserId]) MISSED_ACTIONS[toUserId] = [];
+			MISSED_ACTIONS[toUserId].push([ Date.now(), 'shot', fromUserId, index ]);
 		} else {
 			toSocket.emit('shot', fromUserId, index);
 		}
 	});
+
+	socket.on('giveup', async(fromUserId: string, toUserId: string) => {
+		fromUserId = getNonEmptyString(fromUserId);
+		toUserId = getNonEmptyString(toUserId);
+		if (!fromUserId || !toUserId || fromUserId === toUserId) return;
+		if (socket.data.userId !== fromUserId) return;
+		const toSocket = (await socketIO.fetchSockets()).find(s => s.data.userId === toUserId);
+		if (!toSocket) {
+			if (!MISSED_ACTIONS[toUserId]) MISSED_ACTIONS[toUserId] = [];
+			MISSED_ACTIONS[toUserId].push([ Date.now(), 'giveup', fromUserId, toUserId ]);
+		} else {
+			toSocket.emit('giveup', fromUserId, toUserId);
+		}
+	})
 
 	socket.on('readyToReplayRequest', async(replayId: string, fromUserId: string, withUserId: string) => {
 		fromUserId = getNonEmptyString(fromUserId);
@@ -187,4 +207,4 @@ socketIO.on('connection', async(socket) => {
 
 socketIO.listen(Settings.socketIoPort);
 
-cleanupMissedShots();
+cleanupMissedActions();

@@ -20,7 +20,7 @@ const Application = () => {
 	}
 
 	if (gameState.status === GameStatus.ACTIVE) {
-		return <Battle gameState={gameState} />
+		return <Battle />
 	}
 
 	if (gameState.status === GameStatus.WAITING_FOR_REPLAY) {

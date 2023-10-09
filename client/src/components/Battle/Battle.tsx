@@ -8,14 +8,26 @@ import { fillBorders, getShipId, isFresh, isGameOver, isHitShip, isShip } from '
 import Layout from '../Layout/Layout';
 import theme from '../../index.module.scss';
 import Counter from '../Counter/Counter';
-import { setGameState } from '../../utils/useGameState';
+import { setGameState, useGameState } from '../../utils/useGameState';
 import Settings from '../../Settings';
+import TelegramApi from '../../utils/TelegramApi';
+import i18n from '../../utils/i18n';
 
+const setWaitingForReplay = (gameState: GameState) => {
+	gameState.watchDog = Date.now() + (Settings.waitForReplayS * 1000);
+	gameState.status = GameStatus.WAITING_FOR_REPLAY;
+	setGameState(gameState);
+}
 
-const Battle = (props: { gameState: GameState }) => {
+const setWaitingForNextTurn = (gameState: GameState) => {
+	gameState.watchDog = Date.now() + (Settings.waitForShotS * 1000);
+	setGameState(gameState);
+}
+
+const Battle = () => {
 
 	const myUserId = getTempUserId();
-	const { gameState } = props;
+	const gameState = useGameState();
 	const { users } = gameState;
 	const enemyUserId = Object.keys(users).find(k => k !== myUserId) || '';
 	const enemyName = users[enemyUserId].userName || '';
@@ -24,11 +36,25 @@ const Battle = (props: { gameState: GameState }) => {
 	const myMap = users[myUserId].map;
 	const enemyMap = users[enemyUserId].map;
 
+	TelegramApi.showHideBackButton(true);
 
-	useEffect(() => {
-		socketIO.on('shot', onEnemyShot);
-		return () => { socketIO.off('shot', onEnemyShot) }
-	})
+	const onBackButtonClicked = async() => {
+		const leave = await TelegramApi.showConfirm(i18n('GIVEUP'));
+		if (!leave) return;
+		socketIO.emit('giveup', myUserId, enemyUserId);
+		setGameState({
+			watchDog: 0,
+			status: GameStatus.I_GAVE_UP
+		});
+	}
+
+	const onEnemyGiveup = (fromUserId: string, toUserId: string) => {
+		if (fromUserId !== enemyUserId || toUserId !== myUserId) return;
+		setGameState({
+			watchDog: 0,
+			status: GameStatus.ENEMY_GAVE_UP
+		});
+	}
 
 	const onEnemyShot = (fromUserId: string, index: number) => {
 		
@@ -45,16 +71,10 @@ const Battle = (props: { gameState: GameState }) => {
 			fillBorders(myMap);
 		}
 
-
-		gameState.watchDog = Date.now() + (Settings.waitForShotS * 1000);
-		setGameState(gameState);
-
 		if (isGameOver(myMap)) {
-			setTimeout(() => {
-				gameState.watchDog = Date.now() + (Settings.waitForReplayS * 1000);
-				gameState.status = GameStatus.WAITING_FOR_REPLAY;
-				setGameState(gameState);
-			}, 0);
+			setWaitingForReplay(gameState);
+		} else {
+			setWaitingForNextTurn(gameState);
 		}
 
 
@@ -70,28 +90,30 @@ const Battle = (props: { gameState: GameState }) => {
 			enemyMap[index] = entity | 2;
 			gameState.whosTurn = enemyUserId;
 			fillBorders(enemyMap);
-		}
-
-		else if (isShip(entity) && !isHitShip(entity)) {
+		} else if (isShip(entity) && !isHitShip(entity)) {
 			socketIO.emit('shot', myUserId, enemyUserId, index);
 			enemyMap[index] = getShipId(entity) << 2 | 1;
 			fillBorders(enemyMap);
 		}
-
-		gameState.watchDog = Date.now() + (Settings.waitForShotS * 1000);
-		setGameState(gameState);
-
 		
 		if (isGameOver(enemyMap)) {
-			setTimeout(() => {
-				gameState.watchDog = Date.now() + (Settings.waitForReplayS * 1000);
-				gameState.status = GameStatus.WAITING_FOR_REPLAY;
-				setGameState(gameState);
-			}, 0);
+			setWaitingForReplay(gameState);
+		} else {
+			setWaitingForNextTurn(gameState);
 		}
 		
 	}
 
+	useEffect(() => {
+		socketIO.on('shot', onEnemyShot);
+		socketIO.on('giveup', onEnemyGiveup);
+		TelegramApi.on('onBackButtonClicked', onBackButtonClicked);
+		return () => {
+			socketIO.off('shot', onEnemyShot);
+			socketIO.off('giveup', onEnemyGiveup);
+			TelegramApi.off('onBackButtonClicked', onBackButtonClicked);
+		}
+	});
 
 	return <Layout field1={
 		<Field

@@ -9,7 +9,6 @@ const LAYER_GRID_BG = generateGrid(1.2, 20, theme.smallGridColor);
 
 TelegramApi.expand();
 TelegramApi.setHeaderColor('#517DA2');
-TelegramApi.enableClosingConfirmation();
 setTimeout(selfUpdate, 1000 * 5);
 
 ReactDOM.createRoot(
