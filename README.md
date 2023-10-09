@@ -195,7 +195,7 @@ that allows developer to lock screen orientation in either portrait or landscape
 - Ability to create app without binding it to bot. I believe that for some of the apps this link can be useful but on the other hand, for some it's just useless. It's like you can create WebApp using BotFather, but why do you have to connect it to bot in case if your app doesn't have any functionality that could potentially be dedicated to the bot.
 - Ability to somehow disable this "minifying" / drawer thing, that allows your app to be shown on this small window. For some of the apps this can be useful while for the others it looks like this:
 
-![Новый проект (3)](https://github.com/angrycoding/naval_clash_bot/assets/895042/a3347e99-fc3e-4564-a5a1-7ea544c130ca)
+![Новый проект (3)](https://github.com/angrycoding/naval_clash_bot/assets/895042/65f4aa49-b88b-49d8-b11e-e4d3064f2961)
 
 But if you think that's already too small, then you're wrong, because it can get even smaller in case if you open your Mini App from bot's interface menu (cause then input bar will be added at bottom which is also takes additional space).
 
