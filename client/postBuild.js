@@ -35,7 +35,7 @@ const minifyJS = (path) => new Promise(async(resolve) => {
 		result = (await Terser(data, {
 			toplevel: true,
 			compress: {
-				// drop_console: true,
+				drop_console: true,
 				passes: 4,
 				toplevel: true,
 				global_defs: {
