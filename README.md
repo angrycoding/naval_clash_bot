@@ -21,6 +21,10 @@ some parts of the client side code (i.e. shared code). Before starting developin
 git clone git@github.com:angrycoding/naval_clash_bot.git
 ```
 
+### Setting up bot token and webhook url
+
+Before running backend side, make sure that you set **telegramBotToken** and **telegramWebhookUrl** in [Settings.ts](https://github.com/angrycoding/naval_clash_bot/blob/main/client/src/Settings.ts),
+otherwise bot won't start.
 
 ### Starting the client
 
