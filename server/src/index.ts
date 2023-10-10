@@ -1,4 +1,5 @@
-import { Server, Socket } from 'socket.io';
+import HTTP from 'http';
+import { Server } from 'socket.io';
 import ServerToClientEvents from '../../client/src/types/ServerToClientEvents';
 import ClientToServerEvents from '../../client/src/types/ClientToServerEvents';
 import Settings from '../../client/src/Settings';
@@ -6,18 +7,19 @@ import { GameStatus } from '../../client/src/types/GameState';
 import generateUniqueId from '../../client/src/utils/generateUniqueId';
 import { Map } from '../../client/src/utils/mapUtils';
 import getRandomInt from '../../client/src/utils/getRandomInt';
+import { answerCallbackQuery, sendMessage, updateWebhookUrl } from './Telegram';
 
-const MISSED_ACTIONS: {[userId: string]: Array<
-	[number, 'shot', string, number] |
-	[number, 'giveup', string, string]
->} = {};
+const MISSED_SHOTS: {[userId: string]: Array<[number, string, number]>} = {};
 
 interface SocketData {
 	map: Map;
 	userId: string;
 	userName: string;
 	replayId: string;
+	inviteId: string;
+	persistentUserId: string;
 }
+
 
 const socketIO = new Server<ClientToServerEvents, ServerToClientEvents, {}, SocketData>({
 	path: Settings.socketIoPath,
@@ -33,19 +35,26 @@ const getRandomUserName = (locale: string) => {
 	return [names[getRandomInt(0, names.length - 1)], ranks[getRandomInt(0, ranks.length - 1)]].join(' ')
 }
 
-const cleanupMissedActions = () => {
-	for (const userId in MISSED_ACTIONS) {
+const cleanupMissedShots = () => {
+	for (const userId in MISSED_SHOTS) {
 
-		MISSED_ACTIONS[userId] = MISSED_ACTIONS[userId].filter(missedAction => {
+		MISSED_SHOTS[userId] = MISSED_SHOTS[userId].filter(missedAction => {
 			return Date.now() - missedAction[0] <= 1000 * 60;
 		});
 
-		if (!MISSED_ACTIONS[userId].length) {
-			delete MISSED_ACTIONS[userId];
+		if (!MISSED_SHOTS[userId].length) {
+			delete MISSED_SHOTS[userId];
 		}
 
 	}
-	setTimeout(cleanupMissedActions, 1000 * 30);
+	setTimeout(cleanupMissedShots, 1000 * 30);
+}
+
+const getPositiveInteger = (value: any): number => {
+	if (Number.isInteger(value) && value > 0) {
+		return value;
+	}
+	return 0;
 }
 
 const getNonEmptyString = (value: any): string => {
@@ -56,6 +65,11 @@ const getNonEmptyString = (value: any): string => {
 }
 
 const closeSocket = (socket) => {
+	delete socket.data.map;
+	delete socket.data.userName;
+	delete socket.data.replayId;
+	delete socket.data.inviteId;
+	delete socket.data.persistentUserId;
 	socket.removeAllListeners();
 	socket.disconnect();
 }
@@ -99,9 +113,10 @@ const startBattle = (socket1, socket2, whosTurn?: string) => {
 
 socketIO.on('connection', async(socket) => {
 
-	// socket.data.userId = getNonEmptyString(socket?.handshake?.auth?.userId);
-	// if (!socket.data.userId) return closeSocket(socket);
-	
+	const persistentUserId = getNonEmptyString(socket?.handshake?.auth?.persistentUserId);
+	if (!persistentUserId) return closeSocket(socket);
+	socket.data.persistentUserId = persistentUserId;
+
 	socket.data.userName = (() => {
 		let locale = getNonEmptyString(socket?.handshake?.auth?.locale).toLowerCase();
 		locale = ['en', 'ru'].includes(locale) ? locale : 'en';
@@ -109,15 +124,57 @@ socketIO.on('connection', async(socket) => {
 		return (result ? result : getRandomUserName(locale));
 	})();
 
-	while (MISSED_ACTIONS[socket.data.userId]?.length) {
-		const action = MISSED_ACTIONS[socket.data.userId].shift();
-		if (action[1] === 'shot') {
-			socket.emit('shot', action[2], action[3]);
-		} else if (action[2] === 'giveup') {
-			socket.emit('giveup', action[2], action[3]);
-		}
+	while (MISSED_SHOTS[socket.data.userId]?.length) {
+		const action = MISSED_SHOTS[socket.data.userId].shift();
+		socket.emit('shot', action[1], action[2]);
 	}
 
+
+	socket.on('inviteRequest', async(fromUserId: string, inviteId: string) => {
+		
+		fromUserId = getNonEmptyString(fromUserId);
+		inviteId = getNonEmptyString(inviteId);
+		if (!fromUserId || !inviteId) return;
+		
+		socket.data.userId = fromUserId;
+		socket.data.inviteId = inviteId;
+		
+		const enemySocket = (await socketIO.fetchSockets()).find(socket => (
+			socket.data.persistentUserId !== persistentUserId &&
+			socket.data.userId !== fromUserId &&
+			socket.data.inviteId === inviteId
+		));
+
+		if (!enemySocket) return;
+		const enemyUserId = enemySocket.data.userId;
+
+		delete socket.data.userId;
+		delete socket.data.inviteId;
+		delete enemySocket.data.userId;
+		delete enemySocket.data.inviteId;
+
+		
+		const data = {
+			replayId: inviteId,
+			watchDog: 0,
+			status: GameStatus.PLACESHIPS,
+			whosTurn: [fromUserId, enemyUserId][getRandomInt(0, 1)],
+			users: {
+				[fromUserId]: {
+					map: {},
+					userName: socket.data.userName,
+				},
+				[enemyUserId]: {
+					map: {},
+					userName: enemySocket.data.userName,
+				}
+			}
+		};
+
+		socket.emit('inviteResponse', data);
+		enemySocket.emit('inviteResponse', data);
+
+	});
 
 	socket.on('startGameRequest', async(map: Map, fromUserId: string, replayId?: string, withUserId?: string, whosTurn?: string) => {
 
@@ -136,7 +193,12 @@ socketIO.on('connection', async(socket) => {
 
 		if (replayId && withUserId && [fromUserId, withUserId].includes(whosTurn)) {
 			socket.data.replayId = replayId;
-			const withSocket = allSockets.find(s => s.data.replayId === replayId && s.data.map && s.data.userId === withUserId);
+			const withSocket = allSockets.find(s => (
+				s.data.persistentUserId !== persistentUserId &&
+				s.data.replayId === replayId &&
+				s.data.map &&
+				s.data.userId === withUserId
+			));
 			if (!withSocket) return;
 			startBattle(socket, withSocket, whosTurn);
 		} else {
@@ -160,28 +222,17 @@ socketIO.on('connection', async(socket) => {
 		if (!fromUserId || !toUserId || fromUserId === toUserId) return;
 		if (socket.data.userId !== fromUserId) return;
 		if (!Number.isInteger(index) || index < 0 || index > 99) return;
-		const toSocket = (await socketIO.fetchSockets()).find(s => s.data.userId === toUserId);
+		const toSocket = (await socketIO.fetchSockets()).find(s => (
+			s.data.persistentUserId !== persistentUserId &&
+			s.data.userId === toUserId
+		));
 		if (!toSocket) {
-			if (!MISSED_ACTIONS[toUserId]) MISSED_ACTIONS[toUserId] = [];
-			MISSED_ACTIONS[toUserId].push([ Date.now(), 'shot', fromUserId, index ]);
+			if (!MISSED_SHOTS[toUserId]) MISSED_SHOTS[toUserId] = [];
+			MISSED_SHOTS[toUserId].push([ Date.now(), fromUserId, index ]);
 		} else {
 			toSocket.emit('shot', fromUserId, index);
 		}
 	});
-
-	socket.on('giveup', async(fromUserId: string, toUserId: string) => {
-		fromUserId = getNonEmptyString(fromUserId);
-		toUserId = getNonEmptyString(toUserId);
-		if (!fromUserId || !toUserId || fromUserId === toUserId) return;
-		if (socket.data.userId !== fromUserId) return;
-		const toSocket = (await socketIO.fetchSockets()).find(s => s.data.userId === toUserId);
-		if (!toSocket) {
-			if (!MISSED_ACTIONS[toUserId]) MISSED_ACTIONS[toUserId] = [];
-			MISSED_ACTIONS[toUserId].push([ Date.now(), 'giveup', fromUserId, toUserId ]);
-		} else {
-			toSocket.emit('giveup', fromUserId, toUserId);
-		}
-	})
 
 	socket.on('readyToReplayRequest', async(replayId: string, fromUserId: string, withUserId: string) => {
 		fromUserId = getNonEmptyString(fromUserId);
@@ -190,7 +241,11 @@ socketIO.on('connection', async(socket) => {
 		if (!replayId || !fromUserId || !withUserId || fromUserId === withUserId) return;
 		if (socket.data.userId !== fromUserId) return;
 		socket.data.replayId = replayId;
-		const withSocket = (await socketIO.fetchSockets()).find(s => s.data.replayId === replayId && s.data.userId === withUserId);
+		const withSocket = (await socketIO.fetchSockets()).find(s => (
+			s.data.persistentUserId !== persistentUserId &&
+			s.data.replayId === replayId &&
+			s.data.userId === withUserId
+		));
 		if (!withSocket) return;
 		delete socket.data.replayId;
 		delete withSocket.data.replayId;
@@ -204,7 +259,138 @@ socketIO.on('connection', async(socket) => {
 
 });
 
-
 socketIO.listen(Settings.socketIoPort);
 
-cleanupMissedActions();
+cleanupMissedShots();
+
+
+
+
+/* TELGRAM BOT */
+
+if (Settings.telegramBotToken && Settings.telegramWebhookUrl) {
+	(async() => {
+
+		await updateWebhookUrl(Settings.telegramWebhookUrl);
+
+		HTTP.createServer((request, response) => {
+			
+			let body: any = '';
+
+			request.on('data', (chunk) => body += chunk.toString('utf8'));
+			request.on('end', () => {
+
+				try { body = JSON.parse(body) }
+				catch (e) {}
+				if (typeof body !== 'object' || !body) return;
+
+
+				console.info(body);
+
+				const entity = (body?.callback_query || body?.message);
+				const myUserId = getPositiveInteger(entity?.from?.id);
+				const replyInRussian = (getNonEmptyString(entity?.from?.language_code) === 'ru');
+
+				if (!myUserId) return;
+
+				const callbackQueryId = getNonEmptyString(body?.callback_query?.id);
+				if (callbackQueryId) answerCallbackQuery(callbackQueryId);
+
+				const callbackQueryData = getNonEmptyString(body?.callback_query?.data);
+
+				if (callbackQueryData === 'create_game') {
+					const inviteId = generateUniqueId();
+					if (replyInRussian) {
+						sendMessage(`
+							Хорошо, вот ссылка для игры с другом, <b>отправь</b> ее тому с кем ты хочешь сыграть.
+							Затем <b>нажми</b> на нее и жди пока друг присоединится к твоей игре
+							https://t.me/naval_clash_bot/play?startapp=${Buffer.from(inviteId).toString('base64')}
+						`, myUserId, { disable_notification: true })
+					} else {
+						sendMessage(`
+							Okay, here is the link to play with the friend, <b>send it</b> to one of your friends.
+							Then <b>click</b> on it and wait until your friend will join the game
+							https://t.me/naval_clash_bot/play?startapp=${Buffer.from(inviteId).toString('base64')}
+						`, myUserId, { disable_notification: true })
+					}
+				}
+
+				else if (callbackQueryData === 'send_link') {
+					if (replyInRussian) {
+						sendMessage(`
+							Хорошо, вот ссылка для игры со <b>случайным</b> противником, просто <b>нажми</b> и <b>жди</b>
+							пока кто-нибудь присоединится к твоей игре
+							https://t.me/naval_clash_bot/play
+						`, myUserId, { disable_notification: true })
+					} else {
+						sendMessage(`
+							Okay, here is the link to play with <b>whoever</b> wants to join, just <b>click</b> on it
+							and <b>wait</b> until somebody will join your game
+							https://t.me/naval_clash_bot/play
+						`, myUserId, { disable_notification: true })
+					}
+				}
+
+				else if (replyInRussian) {
+
+					sendMessage(`Привет, с кем ты хочешь поиграть?`, myUserId, {
+						disable_notification: true,
+						reply_markup: {
+							inline_keyboard: [
+								[{
+									text: 'С другом',
+									callback_data: 'create_game'
+								}],
+								[{
+									text: 'Со случайным противником',
+									callback_data: 'send_link'
+								}]
+							]
+						}
+					});
+
+				}
+				
+				else {
+
+					sendMessage(`Hi, who do you want to play with this time?`, myUserId, {
+						disable_notification: true,
+						reply_markup: {
+							inline_keyboard: [
+								[{
+									text: 'With on of my friends',
+									callback_data: 'create_game'
+								}],
+								[{
+									text: 'With anyone whoever wants to join',
+									callback_data: 'send_link'
+								}]
+							]
+						}
+					});
+
+
+				}
+
+
+
+			});
+
+			response.end();
+
+		}).listen(Settings.telegramBotPort, '127.0.0.1');
+
+	})();
+}
+
+else {
+
+	if (!Settings.telegramBotToken) {
+		console.info('No Settings.telegramBotToken defined, bot won\'t start!');
+	}
+
+	if (!Settings.telegramWebhookUrl) {
+		console.info('No Settings.telegramWebhookUrl defined, bot won\'t start!');
+	}
+
+}

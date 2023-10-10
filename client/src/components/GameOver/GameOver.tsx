@@ -7,7 +7,6 @@ import Button from "../Button/Button";
 import Field from "../Field/Field"
 import Layout from "../Layout/Layout"
 import styles from './GameOver.module.scss'
-import TelegramApi from "../../utils/TelegramApi";
 
 
 const PlayAgainButton = () => (
@@ -25,7 +24,6 @@ const GameOver = () => {
 	const users = (gameState.users || {});
 	const isMyTurn = (gameState.whosTurn === myUserId);
 	const iConfirm = Boolean(users[myUserId]?.confirm);
-	TelegramApi.showHideBackButton(false);
 
 	if (gameState.status === GameStatus.ACTIVE) {
 		return (

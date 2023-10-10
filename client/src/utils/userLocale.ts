@@ -3,7 +3,7 @@ import TelegramApi from "./TelegramApi";
 const result: any = (
 	TelegramApi.getUserLocale() ||
 	navigator?.languages?.[0] ||
-	navigator.language
+	navigator?.language
 );
 
 const userLocale = (

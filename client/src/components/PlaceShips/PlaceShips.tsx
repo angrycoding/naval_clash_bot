@@ -14,7 +14,6 @@ import { setGameState, useGameState } from '../../utils/useGameState';
 import Settings from '../../Settings';
 import formatTime from '../../utils/formatTime';
 import styles from './PlaceShips.module.scss'
-import TelegramApi from '../../utils/TelegramApi';
 
 
 const PlaceShips = () => {
@@ -29,8 +28,6 @@ const PlaceShips = () => {
 	const enemyName = users[enemyUserId]?.userName || '';
 	const iConfirm = Boolean(users[myUserId]?.confirm);
 	const iWin = (gameState.whosTurn === myUserId);
-
-	TelegramApi.showHideBackButton(Boolean(enemyUserId));
 
 	useEffect(() => {
 		if (!iConfirm) return;

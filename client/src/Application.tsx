@@ -4,8 +4,7 @@ import Battle from "./components/Battle/Battle";
 import Replay from "./components/Replay/Replay";
 import GameOver from "./components/GameOver/GameOver";
 import { useGameState } from "./utils/useGameState";
-
-
+import WaitForContact from "./components/WaitForContact/WaitForContact";
 
 const Application = () => {
 
@@ -13,6 +12,10 @@ const Application = () => {
 
 	if (!gameState.watchDog) {
 		return <GameOver />
+	}
+
+	if (gameState.status === GameStatus.WAIT_FOR_CONTACT) {
+		return <WaitForContact />
 	}
 
 	if (gameState.status === GameStatus.PLACESHIPS) {

@@ -2,18 +2,29 @@ import { useEffect, useState } from "react";
 import GameState, { GameStatus } from "../types/GameState";
 import beep from './beep.mp3';
 import { playSound } from "./playSound";
-import TelegramApi from "./TelegramApi";
+import inviteId from "./inviteId";
+
 
 const DEFAULT_GAME_STATE: GameState = {
 	replayId: '',
 	watchDog: Infinity,
 	status: GameStatus.PLACESHIPS,
 	whosTurn: '',
-	users: {
-	}
+	users: {}
+};
+
+const WAIT_FOR_CONTACT_STATE: GameState = {
+	replayId: '',
+	watchDog: Infinity,
+	status: GameStatus.WAIT_FOR_CONTACT,
+	whosTurn: '',
+	users: {}
 }
 
-let globalGameState = DEFAULT_GAME_STATE;
+let globalGameState = (
+	inviteId ? WAIT_FOR_CONTACT_STATE :
+	DEFAULT_GAME_STATE
+);
 
 
 export const useSecondsLeft = () => {

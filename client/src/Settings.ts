@@ -41,17 +41,30 @@ const Settings = {
 		'Штурман'
 	],
 
-	// ожидание следующего хода
+	// how long to wait for the next turn
 	waitForShotS: 30,
 
-	// когда начинать показывать таймер об истечении времени
+	// when to show timer with expiring time
 	waitForShotShowS: 5,
 
-	// ожидание подтверждения повторной игры
+	// how long to wait for replay confirmation
 	waitForReplayS: 20,
 
-	// таймер ожидания начала повторной игры
-	waitForPlayS: 45
+	// how long to wait for replay start
+	waitForPlayS: 45,
+
+
+	// how long to wait for placing ships when joining pair to pair gam
+	waitForPlayP2PS: 60,
+
+
+	// BOT SETTINGS
+
+	telegramBotPort: 3494,
+	telegramBotApiUrl: "https://api.telegram.org",
+	telegramWebhookUrl: "",
+	telegramBotToken: "",
+	telegramBotRequestTimeoutMs: 1000,
 
 };
 

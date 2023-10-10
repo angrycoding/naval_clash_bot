@@ -1,8 +1,8 @@
 import GameState from "./GameState";
 
 export default interface ServerToClientEvents {
+	inviteResponse: (gameState: GameState) => void;
 	shot: (fromUserId: string, index: number) => void;
-	giveup: (fromUserId: string, toUserId: string) => void;
 	readyToReplayResponse: (replayId: string, withUserId: string) => void;
 	startGameResponse: (gameState: GameState) => void;
 }

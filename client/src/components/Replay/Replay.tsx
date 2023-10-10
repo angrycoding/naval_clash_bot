@@ -10,7 +10,6 @@ import i18n from "../../utils/i18n";
 import Settings from "../../Settings";
 import { setGameState, useGameState } from "../../utils/useGameState";
 import styles from './Replay.module.scss';
-import TelegramApi from "../../utils/TelegramApi";
 
 
 const Replay = () => {
@@ -22,8 +21,6 @@ const Replay = () => {
 	const enemyUserId = Object.keys(users).find(k => k !== myUserId) || '';
 	const enemyName = users[enemyUserId].userName || '';
 	const iConfirm = Boolean(users[myUserId]?.confirm);
-
-	TelegramApi.showHideBackButton(iConfirm);
 
 	const readyToReplayRequest = () => {
 		setGameState({

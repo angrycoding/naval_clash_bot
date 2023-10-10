@@ -10,8 +10,6 @@ import theme from '../../index.module.scss';
 import Counter from '../Counter/Counter';
 import { setGameState, useGameState } from '../../utils/useGameState';
 import Settings from '../../Settings';
-import TelegramApi from '../../utils/TelegramApi';
-import i18n from '../../utils/i18n';
 
 const setWaitingForReplay = (gameState: GameState) => {
 	gameState.watchDog = Date.now() + (Settings.waitForReplayS * 1000);
@@ -35,26 +33,6 @@ const Battle = () => {
 	const isMyTurn = (gameState.whosTurn === myUserId);
 	const myMap = users[myUserId].map;
 	const enemyMap = users[enemyUserId].map;
-
-	TelegramApi.showHideBackButton(true);
-
-	const onBackButtonClicked = async() => {
-		const leave = await TelegramApi.showConfirm(i18n('GIVEUP'));
-		if (!leave) return;
-		socketIO.emit('giveup', myUserId, enemyUserId);
-		setGameState({
-			watchDog: 0,
-			status: GameStatus.I_GAVE_UP
-		});
-	}
-
-	const onEnemyGiveup = (fromUserId: string, toUserId: string) => {
-		if (fromUserId !== enemyUserId || toUserId !== myUserId) return;
-		setGameState({
-			watchDog: 0,
-			status: GameStatus.ENEMY_GAVE_UP
-		});
-	}
 
 	const onEnemyShot = (fromUserId: string, index: number) => {
 		
@@ -106,13 +84,7 @@ const Battle = () => {
 
 	useEffect(() => {
 		socketIO.on('shot', onEnemyShot);
-		socketIO.on('giveup', onEnemyGiveup);
-		TelegramApi.on('onBackButtonClicked', onBackButtonClicked);
-		return () => {
-			socketIO.off('shot', onEnemyShot);
-			socketIO.off('giveup', onEnemyGiveup);
-			TelegramApi.off('onBackButtonClicked', onBackButtonClicked);
-		}
+		return () => { socketIO.off('shot', onEnemyShot); }
 	});
 
 	return <Layout field1={

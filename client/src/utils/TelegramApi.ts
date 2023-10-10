@@ -16,7 +16,7 @@ class TelegramApiClass extends EventEmitter {
 
 	constructor() {
 		super();
-		Telegram.WebApp.onEvent('backButtonClicked', this.onBackButtonClicked)
+		Telegram?.WebApp?.onEvent?.('backButtonClicked', this.onBackButtonClicked)
 	}
 
 	expand = () => {

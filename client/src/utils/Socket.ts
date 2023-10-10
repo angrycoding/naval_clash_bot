@@ -4,8 +4,10 @@ import ClientToServerEvents from '../types/ClientToServerEvents';
 import Settings from '../Settings';
 import userLocale from './userLocale';
 import TelegramApi from './TelegramApi';
+import persistentUserId from './persistentUserId';
 
 declare const isProduction: boolean;
+
 
 const socketIO: Socket<ServerToClientEvents, ClientToServerEvents> = io((
 	isProduction ?
@@ -14,18 +16,11 @@ const socketIO: Socket<ServerToClientEvents, ClientToServerEvents> = io((
 ), {
 	auth: {
 		locale: userLocale,
+		persistentUserId,
 		userName: TelegramApi.getFirstName() || new URLSearchParams(window.location.search).get('name'),
 	},
 	path: Settings.socketIoPath,
 	autoConnect: true,
 });
-
-// @ts-ignore
-window.terminateConn = () => {
-	socketIO.disconnect();
-	setTimeout(() => {
-		socketIO.connect();
-	}, 10000)
-}
 
 export default socketIO;

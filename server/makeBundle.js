@@ -12,6 +12,11 @@ const produceBundle = () => new Promise(async(resolve) => {
 
 	const browserify = Browserify({
 		bundleExternal: false,
+		insertGlobalVars: {
+			navigator: function() { return "undefined" },
+			Telegram: function() { return "undefined" },
+			__dirname: function () { return "__dirname"; }
+		}
 	})
 
 	browserify.plugin(

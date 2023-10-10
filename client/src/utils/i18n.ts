@@ -13,8 +13,6 @@ const Messages = {
 	TWO_SECONDS: ['seconds', 'секунды'],
 	FIVE_SECONDS: ['seconds', 'секунд'],
 
-	GIVEUP: ['Are you sure you want to surrender?', 'Вы уверены что хотите сдаться?'],
-
 	CHANGE_LAYOUT: ['Change layout', 'поменять расположение'],
 	READY_TO_PLAY: ['I am Ready to play', 'Я готов к игре'],
 	WITH_RANDOM_ENEMY: ['Play with whoever wants to join', 'Игра со случайным противником'],
@@ -51,6 +49,8 @@ const Messages = {
 	],
 
 	PLAY_AGAIN: ['Play again', 'Играть ещё'],
+
+	LOADING: ['Waiting for user to joing the game', 'Ждем подключения пользователя'],
 
 
 
