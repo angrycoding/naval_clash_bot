@@ -1,6 +1,6 @@
 # Naval Clash Game - Telegram Mini App
 
-[**1st PLACE – $1,500**](https://t.me/contest/342)
+🎉🎉🎉 [**1st PLACE – $1,500**](https://t.me/contest/342) 🎉🎉🎉
 
 Naval Clash a beloved childhood game for everyone.
 
