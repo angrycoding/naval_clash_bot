@@ -2,6 +2,9 @@
 
 🎉🎉🎉 [**1st PLACE – $1,500**](https://t.me/contest/342) 🎉🎉🎉
 
+![Новый проект (7)](https://github.com/angrycoding/naval_clash_bot/assets/895042/ae7f987a-13fd-4fd2-be2c-2cc2dedb27cf)
+
+
 Naval Clash a beloved childhood game for everyone.
 
 Play now here: https://t.me/naval_clash_bot/play
