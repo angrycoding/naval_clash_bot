@@ -1,13 +1,14 @@
 import HTTP from 'http';
+import { v4 as uuidv4 } from 'uuid';
 import { Server } from 'socket.io';
 import ServerToClientEvents from '../../client/src/types/ServerToClientEvents';
 import ClientToServerEvents from '../../client/src/types/ClientToServerEvents';
 import Settings from '../../client/src/Settings';
 import { GameStatus } from '../../client/src/types/GameState';
-import generateUniqueId from '../../client/src/utils/generateUniqueId';
 import { Map } from '../../client/src/utils/mapUtils';
 import getRandomInt from '../../client/src/utils/getRandomInt';
 import { answerCallbackQuery, sendMessage, updateWebhookUrl } from './Telegram';
+
 
 const MISSED_SHOTS: {[userId: string]: Array<[number, string, number]>} = {};
 
@@ -82,7 +83,7 @@ const startBattle = (socket1, socket2, whosTurn?: string) => {
 
 	
 	const data = {
-		replayId: generateUniqueId(),
+		replayId: uuidv4(),
 		watchDog: 0,
 		status: GameStatus.ACTIVE,
 		whosTurn: (
@@ -191,6 +192,7 @@ socketIO.on('connection', async(socket) => {
 
 		const allSockets = await socketIO.fetchSockets();
 
+
 		if (replayId && withUserId && [fromUserId, withUserId].includes(whosTurn)) {
 			socket.data.replayId = replayId;
 			const withSocket = allSockets.find(s => (
@@ -205,6 +207,8 @@ socketIO.on('connection', async(socket) => {
 			const readyToBattle: typeof allSockets = [];
 			for (const socket of allSockets) {
 				if (!socket.data.map) continue;
+				if (socket.data.inviteId) continue;
+				if (socket.data.replayId) continue;
 				readyToBattle.push(socket);
 				while (readyToBattle.length >= 2) {
 					const first = readyToBattle.shift();
@@ -299,7 +303,7 @@ if (Settings.telegramBotToken && Settings.telegramWebhookUrl) {
 				const callbackQueryData = getNonEmptyString(body?.callback_query?.data);
 
 				if (callbackQueryData === 'create_game') {
-					const inviteId = generateUniqueId();
+					const inviteId = uuidv4();
 					if (replyInRussian) {
 						sendMessage(`
 							Хорошо, вот ссылка для игры с другом, <b>отправь</b> ее тому с кем ты хочешь сыграть.

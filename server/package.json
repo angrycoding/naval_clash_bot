@@ -6,7 +6,8 @@
  "dependencies": {
   "cheerio": "^1.0.0-rc.12",
   "request": "^2.88.2",
-  "socket.io": "^4.7.2"
+  "socket.io": "^4.7.2",
+  "uuid": "^9.0.1"
  },
  "devDependencies": {
   "browserify": "^17.0.0",
