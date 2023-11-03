@@ -290,7 +290,7 @@ if (Settings.telegramBotToken && Settings.telegramWebhookUrl) {
 				if (typeof body !== 'object' || !body) return;
 
 
-				console.info(body);
+				// console.info(body);
 
 				const entity = (body?.callback_query || body?.message);
 				const myUserId = getPositiveInteger(entity?.from?.id);
