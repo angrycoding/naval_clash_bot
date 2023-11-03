@@ -1,19 +1,22 @@
-import Button from '../Button/Button';
-import Field from '../Field/Field';
-import ThreeDots from '../ThreeDots/ThreeDots';
+import Button from '../../components/Button/Button';
+import Field from '../../components/Field/Field';
+import ThreeDots from '../../components/ThreeDots/ThreeDots';
 import { useEffect, useState } from 'react';
-import { Map, generateMap } from '../../utils/mapUtils';
+import { convertNewMapToOld, convertOldMapToNew, generateMap } from '../../../../shared/mapUtils';
 import socketIO from '../../utils/Socket';
-import Layout from '../Layout/Layout';
-import Modal from '../Modal/Modal';
-import GameState from '../../types/GameState';
-import Counter from '../Counter/Counter';
+import Layout from '../../components/Layout/Layout';
+import Modal from '../../components/Modal/Modal';
+import GameState from '../../../../shared/GameState';
+import Counter from '../../components/Counter/Counter';
 import { getTempUserId } from '../../utils/tempUserId';
 import i18n from '../../utils/i18n';
 import { setGameState, useGameState } from '../../utils/useGameState';
-import Settings from '../../Settings';
+import Settings from '../../../../shared/Settings';
 import formatTime from '../../utils/formatTime';
 import styles from './PlaceShips.module.scss'
+import Map from '../../../../shared/Map';
+import DemoField from '../../components/DemoField/DemoField';
+
 
 
 const PlaceShips = () => {
@@ -21,7 +24,6 @@ const PlaceShips = () => {
 	const myUserId = getTempUserId();
 	const gameState = useGameState();
 	const [ myRandomMap, setMyRandomMap ] = useState<Map>(generateMap);
-	const [ enemyRandomMap, setEnemyRandomMap ] = useState<Map>(generateMap);
 
 	const users = (gameState.users || {});
 	const enemyUserId = Object.keys(users).find(k => k !== myUserId) || '';
@@ -29,17 +31,13 @@ const PlaceShips = () => {
 	const iConfirm = Boolean(users[myUserId]?.confirm);
 	const iWin = (gameState.whosTurn === myUserId);
 
-	useEffect(() => {
-		if (!iConfirm) return;
-		const interval = setInterval(() => setEnemyRandomMap(generateMap()), 1000);
-		return () => clearInterval(interval);
-	}, [gameState]);
-
 	const onGenerate = () => {
 		setMyRandomMap(generateMap());
 	}
 
 	const startGameRequest = () => {
+
+
 		setGameState({
 			...gameState,
 			watchDog: (enemyUserId ? gameState.watchDog : Infinity),
@@ -54,7 +52,7 @@ const PlaceShips = () => {
 
 		socketIO.emit(
 			'startGameRequest',
-			myRandomMap,
+			convertNewMapToOld( myRandomMap ),
 			myUserId,
 			gameState.replayId || '',
 			enemyUserId || '',
@@ -64,6 +62,12 @@ const PlaceShips = () => {
 	}
 
 	const startGameResponse = (gameState: GameState) => {
+
+		for (const x in gameState.users) {
+			const user = gameState.users[x];
+			user.map = convertOldMapToNew(user.map);
+		}
+
 		setGameState({
 			...gameState,
 			watchDog: Date.now() + (Settings.waitForShotS * 1000)
@@ -78,35 +82,37 @@ const PlaceShips = () => {
 	// waiting for random user to join
 	if (iConfirm && !enemyUserId) {
 		return <Layout field1={
-			<Field map={myRandomMap} status={<Modal></Modal>} />
+			<Field map={myRandomMap}><Modal></Modal></Field>
 		} field2={
-			<Field map={enemyRandomMap} reverseLegend={true} status={<Modal>
+			
+			<DemoField reverseLegend={true}>
 				<div className={styles.text}>
 					<ThreeDots>{i18n('WAITING_ENEMY')}</ThreeDots>
 				</div>
-			</Modal>} />
+			</DemoField>
+
 		} />
 	}
 
 	// waiting for specific user to join
 	if (iConfirm && enemyUserId) {
 		return <Layout field1={
-			<Field map={myRandomMap} status={<Modal></Modal>} />
+			<Field map={myRandomMap}><Modal></Modal></Field>
 		} field2={
-			<Field map={enemyRandomMap} reverseLegend={true} status={<Modal>
+			<DemoField reverseLegend={true}>
 				<div className={styles.text}>
 					<div>{i18n('WAITING_ENEMY')}</div>
 					{enemyName && <div>{enemyName}</div>}
 					<Counter onRender={s => <ThreeDots>{formatTime(s)}</ThreeDots>} />
 				</div>
-			</Modal>} />
+			</DemoField>
 		} />
 	}
 
 	return <Layout field1={
 		<Field map={myRandomMap} />
 	} field2={
-		<Field map={{}} reverseLegend={true} status={<Modal>
+		<DemoField reverseLegend={true}>
 			<div className={styles.textWithButtons}>
 				<div>
 					{enemyUserId ? <>
@@ -130,7 +136,7 @@ const PlaceShips = () => {
 			</div>
 
 
-		</Modal>} />
+		</DemoField>
 	} />
 
 }

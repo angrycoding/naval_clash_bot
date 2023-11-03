@@ -1,12 +1,13 @@
-import { GameStatus } from "../../types/GameState";
+import { GameStatus } from "../../../../shared/GameState";
 import { getTempUserId, refreshTempUserId } from "../../utils/tempUserId";
 import i18n from "../../utils/i18n";
 import { setGameState, useGameState } from "../../utils/useGameState";
-import Banner from "../Banner/Banner";
-import Button from "../Button/Button";
-import Field from "../Field/Field"
-import Layout from "../Layout/Layout"
+import Banner from "../../components/Banner/Banner";
+import Button from "../../components/Button/Button";
+import Field from "../../components/Field/Field"
+import Layout from "../../components/Layout/Layout"
 import styles from './GameOver.module.scss'
+import DemoField from "../../components/DemoField/DemoField";
 
 
 const PlayAgainButton = () => (
@@ -30,18 +31,15 @@ const GameOver = () => {
 			<Layout field1={
 				<Banner kind={Banner.Kind.SLOW} />
 			} field2={
-				<Field
-					map={{}}
-					reverseLegend={true}
-					hideAliveShips={true}
-					status={<div className={styles.textWithButtons}>
+				<DemoField reverseLegend={true}>
+					<div className={styles.textWithButtons}>
 						<div>
 							<div>{isMyTurn ? i18n('YOU_LOSE') : i18n('YOU_WIN')}</div>
 							<div>{isMyTurn ? i18n('SLOW_ACTION_YOU') : i18n('SLOW_ACTION_ENEMY')}</div>
 						</div>
 						<PlayAgainButton />
-					</div>}
-				/>
+					</div>
+				</DemoField>
 			} />
 		)
 	}
@@ -51,18 +49,15 @@ const GameOver = () => {
 			<Layout field1={
 				<Banner kind={iConfirm ? Banner.Kind.SADFACE : Banner.Kind.SAILOR} />
 			} field2={
-				<Field
-					map={{}}
-					reverseLegend={true}
-					hideAliveShips={true}
-					status={<div className={styles.textWithButtons}>
+				<DemoField reverseLegend={true}>
+					<div className={styles.textWithButtons}>
 						<div>
 							<div>{i18n('GAME_OVER_TITLE')}</div>
 							{iConfirm ? i18n('ENEMY_GONE') : ''}
 						</div>
 						<PlayAgainButton />
-					</div>}
-				/>
+					</div>
+				</DemoField>
 			} />
 		)
 	}
@@ -72,18 +67,15 @@ const GameOver = () => {
 			<Layout field1={
 				<Banner kind={iConfirm ? Banner.Kind.SADFACE : Banner.Kind.SLOW} />
 			} field2={
-				<Field
-					map={{}}
-					reverseLegend={true}
-					hideAliveShips={true}
-					status={<div className={styles.textWithButtons}>
+				<DemoField reverseLegend={true}>
+					<div className={styles.textWithButtons}>
 						<div>
 							<div>{i18n('GAME_OVER_TITLE')}</div>
 							{iConfirm ? i18n('ENEMY_GONE') : i18n('SLOW_PLACING_SHIPS')}
 						</div>
 						<PlayAgainButton />
-					</div>}
-				/>
+					</div>
+				</DemoField>
 			} />
 		);
 	}
@@ -92,17 +84,14 @@ const GameOver = () => {
 		<Layout field1={
 			<Banner kind={Banner.Kind.SAILOR} />
 		} field2={
-			<Field
-				map={{}}
-				reverseLegend={true}
-				hideAliveShips={true}
-				status={<div className={styles.textWithButtons}>
+			<DemoField reverseLegend={true}>
+				<div className={styles.textWithButtons}>
 					<div>
 						<div>{i18n('GAME_OVER_TITLE')}</div>
 					</div>
 					<PlayAgainButton />
-				</div>}
-			/>
+				</div>
+			</DemoField>
 		} />
 	);
 }

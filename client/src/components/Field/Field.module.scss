@@ -2,11 +2,14 @@
 $padding: 3px;
 $letterSize: 1.5ch;
 
-$gridBorderSize: 4px;
-$gridBorderRadius: 6px;
+$borderSize: 3px;
 
-$shipBorderSize: 3px;
+$gridBorderRadius: 6px;
 $shipBorderRadius: 3px;
+
+
+
+
 
 .outerWrapper {
 	max-width: 100cqmin;
@@ -85,7 +88,7 @@ $shipBorderRadius: 3px;
 		z-index: 1;
 		pointer-events: none;
 		border-radius: inherit;
-		border: $gridBorderSize solid currentColor;
+		border: $borderSize solid currentColor;
 	}
 
 	& > * {
@@ -110,7 +113,7 @@ $shipBorderRadius: 3px;
 	text-align: center;
 	overflow: hidden;
 	border-radius: $gridBorderRadius;
-	border: $gridBorderSize solid currentColor;
+	border: $borderSize solid currentColor;
 }
 
 
@@ -158,12 +161,13 @@ $shipBorderRadius: 3px;
 		border-top-right-radius: ($trr * $shipBorderRadius);
 		border-bottom-left-radius: ($blr * $shipBorderRadius);
 		border-bottom-right-radius: ($brr * $shipBorderRadius);
-		border-top: ($top * $shipBorderSize) solid currentColor;
-		border-left: ($left * $shipBorderSize) solid currentColor;
-		border-right: ($right * $shipBorderSize) solid currentColor;
-		border-bottom: ($bottom * $shipBorderSize) solid currentColor;
+		border-top: ($top * $borderSize) solid currentColor;
+		border-left: ($left * $borderSize) solid currentColor;
+		border-right: ($right * $borderSize) solid currentColor;
+		border-bottom: ($bottom * $borderSize) solid currentColor;
 	}
 }
+
 
 
 .ship.one {

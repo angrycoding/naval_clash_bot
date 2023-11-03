@@ -1,10 +1,10 @@
-import { GameStatus } from "./types/GameState";
-import PlaceShips from "./components/PlaceShips/PlaceShips";
-import Battle from "./components/Battle/Battle";
-import Replay from "./components/Replay/Replay";
-import GameOver from "./components/GameOver/GameOver";
+import { GameStatus } from "../../shared/GameState";
+import PlaceShips from "./views/PlaceShips/PlaceShips";
+import Battle from "./views/Battle/Battle";
+import Replay from "./views/Replay/Replay";
+import GameOver from "./views/GameOver/GameOver";
 import { useGameState } from "./utils/useGameState";
-import WaitForContact from "./components/WaitForContact/WaitForContact";
+import WaitForContact from "./views/WaitForContact/WaitForContact";
 
 const Application = () => {
 

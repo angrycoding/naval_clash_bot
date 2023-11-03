@@ -1,5 +1,5 @@
 import React,  { CSSProperties, useState } from 'react';
-import getRandomInt from '../../utils/getRandomInt';
+import getRandomInt from '../../../../shared/getRandomInt';
 import styles from './ThreeDots.module.scss';
 import clsx from 'clsx';
 

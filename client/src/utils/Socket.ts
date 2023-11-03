@@ -1,18 +1,15 @@
 import { Socket, io } from 'socket.io-client';
-import ServerToClientEvents from '../types/ServerToClientEvents';
-import ClientToServerEvents from '../types/ClientToServerEvents';
-import Settings from '../Settings';
+import ServerToClientEvents from '../../../shared/ServerToClientEvents';
+import ClientToServerEvents from '../../../shared/ClientToServerEvents';
+import Settings from '../../../shared/Settings';
 import userLocale from './userLocale';
 import TelegramApi from './TelegramApi';
 import persistentUserId from './persistentUserId';
 
 declare const isProduction: boolean;
 
-
 const socketIO: Socket<ServerToClientEvents, ClientToServerEvents> = io((
-	isProduction ?
-	'https://new.videotam.ru' :
-	`http://192.168.1.109:${Settings.socketIoPort}`
+	isProduction ? Settings.socketIoHost : `:${Settings.socketIoPort}`
 ), {
 	auth: {
 		locale: userLocale,

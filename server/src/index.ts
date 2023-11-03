@@ -1,13 +1,13 @@
 import HTTP from 'http';
 import { v4 as uuidv4 } from 'uuid';
 import { Server } from 'socket.io';
-import ServerToClientEvents from '../../client/src/types/ServerToClientEvents';
-import ClientToServerEvents from '../../client/src/types/ClientToServerEvents';
-import Settings from '../../client/src/Settings';
-import { GameStatus } from '../../client/src/types/GameState';
-import { Map } from '../../client/src/utils/mapUtils';
-import getRandomInt from '../../client/src/utils/getRandomInt';
 import { answerCallbackQuery, sendMessage, updateWebhookUrl } from './Telegram';
+import Settings from '../../shared/Settings';
+import ServerToClientEvents from '../../shared/ServerToClientEvents';
+import ClientToServerEvents from '../../shared/ClientToServerEvents';
+import getRandomInt from '../../shared/getRandomInt';
+import { GameStatus } from '../../shared/GameState';
+import Map from '../../shared/Map';
 
 
 const MISSED_SHOTS: {[userId: string]: Array<[number, string, number]>} = {};
@@ -130,7 +130,7 @@ socketIO.on('connection', async(socket) => {
 		socket.emit('shot', action[1], action[2]);
 	}
 
-
+	// sent by client when he is waiting for friend's connection
 	socket.on('inviteRequest', async(fromUserId: string, inviteId: string) => {
 		
 		fromUserId = getNonEmptyString(fromUserId);
@@ -238,6 +238,7 @@ socketIO.on('connection', async(socket) => {
 		}
 	});
 
+	// sent by client when he wants to play with same player again
 	socket.on('readyToReplayRequest', async(replayId: string, fromUserId: string, withUserId: string) => {
 		fromUserId = getNonEmptyString(fromUserId);
 		withUserId = getNonEmptyString(withUserId);

@@ -1,7 +1,7 @@
 import userLocale from "./userLocale";
 
 
-const Messages = {
+export const Messages = {
 
 	ONE_HOUR: ['hour', 'час'],
 	TWO_HOURS: ['hours', 'часа'],

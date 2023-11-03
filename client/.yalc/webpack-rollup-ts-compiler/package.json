@@ -1,0 +1,28 @@
+{
+  "name": "webpack-rollup-ts-compiler",
+  "version": "0.0.1+b3203bfb",
+  "description": "webpack-rollup-ts-compiler",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/angrycoding/webpack-rollup-ts-compiler"
+  },
+  "author": "Ruslan Matveev aka Angrycoding <ruslan.matveev@mediafellows.com>",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "rm -rf dist && mkdir -p dist && yarn tsc",
+    "prepublishOnly": "yarn build"
+  },
+  "dependencies": {
+    "rollup": "^4.1.4",
+    "typescript": "^5.2.2"
+  },
+  "yalcSig": "b3203bfb528d3fc7a1e3c1a68d690108"
+}

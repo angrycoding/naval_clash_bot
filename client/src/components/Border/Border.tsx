@@ -1,6 +1,6 @@
 import React, { CSSProperties } from 'react';
 import styles from './Border.module.scss';
-import getRandomInt from '../../utils/getRandomInt';
+import getRandomInt from '../../../../shared/getRandomInt';
 
 interface Props {
 	children?: any;

@@ -7,16 +7,16 @@
 
 
 
-	&::before {
-		position: absolute;
-		top: 0px;
-		left: 0px;
-		right: 0px;
-		bottom: 0px;
-		content: '';
-		background-color: rgba(white, 0.8);
-		backdrop-filter: blur(2px);
-	}
+	// &::before {
+	// 	position: absolute;
+	// 	top: 0px;
+	// 	left: 0px;
+	// 	right: 0px;
+	// 	bottom: 0px;
+	// 	content: '';
+	// 	// background-color: rgba(white, 0.8);
+	// 	// backdrop-filter: blur(2px);
+	// }
 
 	&::after {
 		content: '';

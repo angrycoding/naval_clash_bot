@@ -1,13 +1,13 @@
 import { useEffect } from "react";
-import { GameStatus } from "../../types/GameState";
+import { GameStatus } from "../../../../shared/GameState";
 import { getTempUserId } from "../../utils/tempUserId";
-import Field from "../Field/Field";
-import Layout from "../Layout/Layout";
+import Field from "../../components/Field/Field";
+import Layout from "../../components/Layout/Layout";
 import socketIO from "../../utils/Socket";
-import Modal from "../Modal/Modal";
-import Button from "../Button/Button";
+import Modal from "../../components/Modal/Modal";
+import Button from "../../components/Button/Button";
 import i18n from "../../utils/i18n";
-import Settings from "../../Settings";
+import Settings from "../../../../shared/Settings";
 import { setGameState, useGameState } from "../../utils/useGameState";
 import styles from './Replay.module.scss';
 
@@ -52,9 +52,8 @@ const Replay = () => {
 
 
 	return <Layout field1={
-		<Field
-			map={users[myUserId].map}
-			status={<Modal>
+		<Field map={users[myUserId].map}>
+			<Modal>
 				<div className={styles.text}>
 					<div>
 						<div>{winner ? i18n('YOU_WIN') : i18n('YOU_LOSE')}</div>
@@ -65,8 +64,8 @@ const Replay = () => {
 						{i18n('PLAY_ONE_MORE_TIME')}
 					</Button>
 				</div>
-			</Modal>}
-		/>
+			</Modal>
+		</Field>
 	} field2={
 		<Field
 			reverseLegend={true}

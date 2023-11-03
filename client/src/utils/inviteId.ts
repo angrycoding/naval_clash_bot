@@ -1,8 +1,17 @@
 import TelegramApi from "./TelegramApi";
 
 const inviteId = (() => {
-	const result = window.atob(TelegramApi.getStartParam());
-	return (typeof result === 'string' && result.trim() ? result : '');
+
+	let inviteId: any;
+
+	try {
+		inviteId = window.atob(
+			new URLSearchParams(window.location.search).get('inviteid') ||
+			TelegramApi.getStartParam()
+		);
+	} catch (e) {}
+
+	return (typeof inviteId === 'string' && inviteId.trim() ? inviteId : '');
 })();
 
 export default inviteId;

@@ -1,23 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import socketIO from "../../utils/Socket";
 import { setGameState } from "../../utils/useGameState";
-import GameState from "../../types/GameState";
-import Settings from "../../Settings";
+import GameState from "../../../../shared/GameState";
+import Settings from "../../../../shared/Settings";
 import inviteId from "../../utils/inviteId";
-import Layout from "../Layout/Layout";
-import Banner from "../Banner/Banner";
-import Field from "../Field/Field";
-import { Map, generateMap } from "../../utils/mapUtils";
-import Modal from "../Modal/Modal";
+import Layout from "../../components/Layout/Layout";
+import Banner from "../../components/Banner/Banner";
 import styles from './WaitForContact.module.scss';
 import i18n from "../../utils/i18n";
-import ThreeDots from "../ThreeDots/ThreeDots";
+import ThreeDots from "../../components/ThreeDots/ThreeDots";
 import { getTempUserId } from "../../utils/tempUserId";
+import DemoField from "../../components/DemoField/DemoField";
 
 const WaitForContact = () => {
 
 	const myUserId = getTempUserId();
-	const [ randomMap, setRandomMap ] = useState<Map>(generateMap);
 
 	const onInviteResponse = (gameState: GameState) => {
 
@@ -38,23 +35,19 @@ const WaitForContact = () => {
 	}
 
 	useEffect(() => {
-		const interval = setInterval(() => setRandomMap(generateMap()), 1000);
 		socketIO.emit('inviteRequest', myUserId, inviteId);
 		socketIO.on('inviteResponse', onInviteResponse);
-		return () => {
-			clearInterval(interval);
-			socketIO.off('inviteResponse', onInviteResponse);
-		}
+		return () => { socketIO.off('inviteResponse', onInviteResponse); }
 	}, [])
 
 	return <Layout field1={
 		<Banner kind={Banner.Kind.SAILOR} />
 	} field2={
-		<Field map={randomMap} reverseLegend={true} status={<Modal>
+		<DemoField reverseLegend={true}>
 			<ThreeDots className={styles.text}>
 				{i18n('LOADING')}
 			</ThreeDots>
-		</Modal>} />
+		</DemoField>
 	} />
 
 }

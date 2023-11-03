@@ -2,28 +2,29 @@ import React, { CSSProperties } from 'react';
 import clsx from "clsx";
 import styles from './Field.module.scss';
 import theme from '../../index.module.scss'
-import getRandomInt from '../../utils/getRandomInt';
-
-import miss from './miss.mp3';
-
-import hit1 from './hit1.mp3';
-import hit2 from './hit2.mp3';
-import hit3 from './hit3.mp3';
-import hit4 from './hit4.mp3';
+import getRandomInt from '../../../../shared/getRandomInt';
 
 import h1 from './h1.png';
 import h2 from './h2.png';
-
 import c1 from './c1.png';
 import c2 from './c2.png';
 import c3 from './c3.png';
 
-import { playSound } from '../../utils/playSound';
 import generateGrid from '../../utils/generateGrid';
-import { Map, getShipId, index2xy, isDeadShip, isFresh, isHitShip, isSea, isShip, xy2index } from '../../utils/mapUtils';
-
+import { indexOffset, isHitShip, isSea, isShip } from '../../../../shared/mapUtils';
+import Map from '../../../../shared/Map';
+import userLocale from '../../utils/userLocale';
 
 const FIELD_GRID_BG = generateGrid(1.2, '10%', theme.gridColor);
+
+const DIGITS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+
+const LETTERS = (
+	userLocale === 'ru' ?
+	['А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'З', 'И', 'К'] :
+	['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'] 
+);
 
 
 const CROSSES = [c1, c2, c3];
@@ -61,7 +62,7 @@ interface Props {
 	style?: CSSProperties;
 	className?: string;
 	background?: string;
-	status?: any;
+	children?: any;
 	reverseLegend?: boolean;
 	hideAliveShips?: boolean;
 	onHit?: (index: number) => void;
@@ -69,46 +70,15 @@ interface Props {
 
 class Field extends React.Component<Props> {
 
-	componentDidUpdate = (oldProps: Readonly<Props>) => {
-		
-		if (JSON.stringify(oldProps.map) === JSON.stringify(this.props.map)) return;
-
-
-		if (isFresh(this.props.map)) return;
-
-		const oldMap = oldProps.map;
-		const newMap = this.props.map;
-
-		let sound = '';
-
-		for (const index in newMap) {
-			if (newMap[index] === oldMap[index]) continue;
-			const oldEntity = oldMap[index];
-			const newEntity = newMap[index];
-			if (oldEntity === undefined && newEntity !== undefined) {
-				if (!sound) sound = miss;
-			} else if (!isHitShip(oldEntity) && isHitShip(newEntity)) {
-				if (isDeadShip(this.props.map, getShipId(newEntity))) {
-					sound = hit1;
-				} else {
-					sound = [hit2, hit3, hit4][getRandomInt(0, 2)];
-				}
-				break;
-			}
-		}
-
-		if (sound) {
-			playSound(sound)
-		}
-	}
-
 	onHit = (index: number) => {
 		this.props?.onHit?.(index);
 	}
 
 	render() {
 
-		const { map, reverseLegend, hideAliveShips, background, className, status, style } = this.props;
+		const { map, reverseLegend, hideAliveShips, background, className, children, style } = this.props;
+
+		
 
 		return <div className={clsx(
 			className,
@@ -122,18 +92,19 @@ class Field extends React.Component<Props> {
 
 
 			<div className={styles.letters}>
-				{new Array(10).fill(0).map((_, i) => <Label key={i}>{String.fromCharCode(i + 65)}</Label>)}
+				{LETTERS.map(letter => <Label key={letter}>{letter}</Label>)}
 			</div>
+			
 
 			<div className={styles.innerWrapper}>
 				<div className={styles.digits}>
-					{new Array(10).fill(0).map((_, i) => <Label key={i}>{i + 1}</Label>)}
+					{DIGITS.map(digit => <Label key={digit}>{digit}</Label>)}
 				</div>
 
 
 				<div className={styles.grid} style={FIELD_GRID_BG}>
 
-
+					
 					{new Array(100).fill(0).map((_, index) => {
 
 						const entity = map[index];
@@ -151,10 +122,10 @@ class Field extends React.Component<Props> {
 
 
 							const isHit = isHitShip(entity);
-							const leftObject = (hideAliveShips ? isHitShip : isShip)(map[xy2index(index2xy(index, -1, 0))]);
-							const rightObject = (hideAliveShips ? isHitShip : isShip)(map[xy2index(index2xy(index, 1, 0))]);
-							const topObject = (hideAliveShips ? isHitShip : isShip)(map[xy2index(index2xy(index, 0, -1))]);
-							const bottomObject = (hideAliveShips ? isHitShip : isShip)(map[xy2index(index2xy(index, 0, 1))]);
+							const leftObject = (hideAliveShips ? isHitShip : isShip)(map[indexOffset(index, -1, 0)]);
+							const rightObject = (hideAliveShips ? isHitShip : isShip)(map[indexOffset(index, 1, 0)]);
+							const topObject = (hideAliveShips ? isHitShip : isShip)(map[indexOffset(index, 0, -1)]);
+							const bottomObject = (hideAliveShips ? isHitShip : isShip)(map[indexOffset(index, 0, 1)]);
 
 							const isSquare = Boolean(!leftObject && !rightObject && !topObject && !bottomObject);
 							const isVerStart = Boolean(!leftObject && !rightObject && !topObject && bottomObject);
@@ -189,7 +160,7 @@ class Field extends React.Component<Props> {
 					})}
 
 					<div className={styles.status}>
-						<div>{status}</div>
+						<div>{children}</div>
 					</div>
 					
 

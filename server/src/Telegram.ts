@@ -1,7 +1,7 @@
 // import FS from 'fs';
 // import Path from 'path';
 import Request from 'request';
-import Settings from "../../client/src/Settings";
+import Settings from "../../shared/Settings";
 import formatText from './formatText';
 
 type ObjectLiteral = {[key: string]: any};

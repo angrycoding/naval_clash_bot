@@ -1,4 +1,5 @@
-declare const CACHE_NAME: string;
+import Settings from "../../../shared/Settings";
+
 declare const isProduction: boolean;
 
 if (isProduction && navigator.serviceWorker && typeof navigator.serviceWorker === "object") {
@@ -31,10 +32,11 @@ const getFileListFromServer = async(): Promise<{[key: string]: string}> => {
 
 const selfUpdate = async() => {
 
-	const cacheName = (typeof CACHE_NAME === 'string' ? CACHE_NAME : '');
-	if (!cacheName) return;
+	if (!Settings.CACHE_NAME) return;
+	if (typeof caches !== 'object') return;
+
 	const serverFiles = await getFileListFromServer();
-	const cache = await caches.open(cacheName);
+	const cache = await caches.open(Settings.CACHE_NAME);
 
 	for (const path in serverFiles) {
 		const hash = serverFiles[path];

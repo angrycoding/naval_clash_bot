@@ -1,4 +1,4 @@
-import generateUniqueId from "./generateUniqueId";
+import generateUniqueId from "../../../shared/generateUniqueId";
 
 let result = generateUniqueId(64);
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import GameState, { GameStatus } from "../types/GameState";
+import GameState, { GameStatus } from "../../../shared/GameState";
 import beep from './beep.mp3';
 import { playSound } from "./playSound";
 import inviteId from "./inviteId";

@@ -4,6 +4,7 @@
   "build": "rm -rf dist && mkdir -p dist && yarn tsc && ./makeBundle.js"
  },
  "dependencies": {
+	"uuid": "^9.0.1",
   "cheerio": "^1.0.0-rc.12",
   "request": "^2.88.2",
   "socket.io": "^4.7.2",

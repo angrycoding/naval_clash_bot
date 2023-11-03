@@ -1,4 +1,4 @@
-import { Map } from "../utils/mapUtils";
+import Map from "./Map";
 
 export default interface ClientToServerEvents {
 	inviteRequest: (fromUserId: string, inviteId: string) => void;

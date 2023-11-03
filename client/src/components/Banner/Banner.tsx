@@ -1,7 +1,6 @@
 import clsx from "clsx";
-import Field from "../Field/Field"
 import styles from './Banner.module.scss';
-import { generateMap } from "../../utils/mapUtils";
+import DemoField from "../DemoField/DemoField";
 
 enum Kind {
 	SADFACE,
@@ -12,15 +11,14 @@ enum Kind {
 const BannerBase = (props: { kind: Kind }) => {
 	const { kind } = props;
 	return (
-		<Field
-			map={generateMap()}
-			status={<div className={clsx(
+		<DemoField>
+			<div className={clsx(
 				styles.banner,
 				kind === Kind.SADFACE && styles.sad,
 				kind === Kind.SAILOR && styles.sailor,
 				kind === Kind.SLOW && styles.slow
-			)} />}
-		/>
+			)} />
+		</DemoField>
 	)
 }
 
