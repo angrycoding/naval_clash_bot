@@ -86,6 +86,13 @@ unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+
 
 html {
 	font-family: 'Shantell Sans', cursive;
+	background-color: white;
+}
+
+@media (prefers-color-scheme: dark) {
+	html {
+		filter: grayscale(1) invert(1);
+	}
 }
 
 html, body {
