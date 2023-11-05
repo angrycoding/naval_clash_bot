@@ -1,3 +1,9 @@
+const process = (
+	typeof global?.process === 'object' &&
+	typeof global?.process?.env === 'object' &&
+	global?.process
+);
+
 const Settings = {
 
 	// various frontend settings
@@ -25,12 +31,16 @@ const Settings = {
 	// how long to wait on place ship screen when playing with the friend
 	waitForPlayP2PS: 60,
 
-	// telegram bot settings
-	telegramBotPort: 3494,
+	/* TELEGRAM BOT SETTINGS */
+
+	// telegram api url (just in case if you need to change it for self hosted bots)
+	// see https://core.telegram.org/bots/api#using-a-local-bot-api-server
 	telegramBotApiUrl: "https://api.telegram.org",
-	telegramWebhookUrl: "",
-	telegramBotToken: "",
+
 	telegramBotRequestTimeoutMs: 1000,
+	telegramBotToken: process?.env?.telegramBotToken,
+	telegramWebhookUrl: process?.env?.telegramWebhookUrl,
+	telegramBotPort: parseInt(process?.env?.telegramBotPort, 10),
 
 
 	// various backend settings

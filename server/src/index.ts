@@ -9,7 +9,6 @@ import getRandomInt from '../../shared/getRandomInt';
 import { GameStatus } from '../../shared/GameState';
 import Map from '../../shared/Map';
 
-
 const MISSED_SHOTS: {[userId: string]: Array<[number, string, number]>} = {};
 
 interface SocketData {
@@ -273,7 +272,15 @@ cleanupMissedShots();
 
 /* TELGRAM BOT */
 
-if (Settings.telegramBotToken && Settings.telegramWebhookUrl) {
+console.info('bot settings:', {
+	telegramBotPort: Settings.telegramBotPort,
+	telegramBotToken: Settings.telegramBotToken,
+	telegramWebhookUrl: Settings.telegramWebhookUrl
+})
+
+if (Number.isInteger(Settings.telegramBotPort) &&
+	typeof Settings.telegramBotToken === 'string' &&
+	typeof Settings.telegramWebhookUrl === 'string') {
 	(async() => {
 
 		await updateWebhookUrl(Settings.telegramWebhookUrl);
@@ -389,13 +396,5 @@ if (Settings.telegramBotToken && Settings.telegramWebhookUrl) {
 }
 
 else {
-
-	if (!Settings.telegramBotToken) {
-		console.info('No Settings.telegramBotToken defined, bot won\'t start!');
-	}
-
-	if (!Settings.telegramWebhookUrl) {
-		console.info('No Settings.telegramWebhookUrl defined, bot won\'t start!');
-	}
-
+	console.info('Incorrect settings, bot won\'t start');
 }
