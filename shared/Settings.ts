@@ -42,8 +42,27 @@ const Settings = {
 	telegramWebhookUrl: process?.env?.telegramWebhookUrl,
 	telegramBotPort: parseInt(process?.env?.telegramBotPort, 10),
 
-
 	// various backend settings
+
+	randomNamesUa: [
+		"Володимир",
+		"Михайло",
+		"Дмитро",
+		"Павло",
+		"Олексій",
+		"Руслан",
+		"Іван"
+	],
+
+	randomRanksUa: [
+		"Моряк",
+		"Юнга",
+		"Шкіпер",
+		"Капітан",
+		"Боцман",
+		"Штурман"
+	],
+
 	randomNamesEn: [
 		"Vladimir",
 		"Mikhail",

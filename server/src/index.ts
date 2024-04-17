@@ -30,8 +30,8 @@ const socketIO = new Server<ClientToServerEvents, ServerToClientEvents, {}, Sock
 });
 
 const getRandomUserName = (locale: string) => {
-	const names = (locale === 'en' ? Settings.randomNamesEn : Settings.randomNamesRu);
-	const ranks = (locale === 'en' ? Settings.randomRanksEn : Settings.randomRanksRu);
+	const names = (locale === 'en' ? Settings.randomNamesEn : locale === 'uk' ? Settings.randomNamesUa : Settings.randomNamesRu);
+	const ranks = (locale === 'en' ? Settings.randomRanksEn : locale === 'uk' ? Settings.randomRanksUa : Settings.randomRanksRu);
 	return [names[getRandomInt(0, names.length - 1)], ranks[getRandomInt(0, ranks.length - 1)]].join(' ')
 }
 
@@ -119,7 +119,7 @@ socketIO.on('connection', async(socket) => {
 
 	socket.data.userName = (() => {
 		let locale = getNonEmptyString(socket?.handshake?.auth?.locale).toLowerCase();
-		locale = ['en', 'ru'].includes(locale) ? locale : 'en';
+		locale = ['en', 'ru', 'uk'].includes(locale) ? locale : 'en';
 		const result = getNonEmptyString(socket?.handshake?.auth?.userName);
 		return (result ? result : getRandomUserName(locale));
 	})();
@@ -302,6 +302,9 @@ if (Number.isInteger(Settings.telegramBotPort) &&
 				const entity = (body?.callback_query || body?.message);
 				const myUserId = getPositiveInteger(entity?.from?.id);
 				const replyInRussian = (getNonEmptyString(entity?.from?.language_code) === 'ru');
+				const replyInUkrainian = (getNonEmptyString(entity?.from?.language_code) === 'uk');
+
+				console.info({ replyInUkrainian })
 
 				if (!myUserId) return;
 
@@ -318,7 +321,17 @@ if (Number.isInteger(Settings.telegramBotPort) &&
 							Затем <b>нажми</b> на нее и жди пока друг присоединится к твоей игре
 							https://t.me/naval_clash_bot/play?startapp=${Buffer.from(inviteId).toString('base64')}
 						`, myUserId, { disable_notification: true })
-					} else {
+					}
+					
+					else if (replyInUkrainian) {
+						sendMessage(`
+							Добре, ось посилання для гри з другом, <b>відправь</b> її тому, з ким бажаєш зіграти.
+							Потім <b>натисни</b> на неї та очікуй доки друг доєднається до твоєї гри
+							https://t.me/naval_clash_bot/play?startapp=${Buffer.from(inviteId).toString('base64')}
+						`, myUserId, { disable_notification: true })
+					}
+					
+					else {
 						sendMessage(`
 							Okay, here is the link to play with the friend, <b>send it</b> to one of your friends.
 							Then <b>click</b> on it and wait until your friend will join the game
@@ -334,7 +347,17 @@ if (Number.isInteger(Settings.telegramBotPort) &&
 							пока кто-нибудь присоединится к твоей игре
 							https://t.me/naval_clash_bot/play
 						`, myUserId, { disable_notification: true })
-					} else {
+					}
+					
+					else if (replyInUkrainian) {
+						sendMessage(`
+							Добре, ось посилання для гри з <b>випадковим</b> супротивником, просто <b>натисни</b> та <b>очікуй</b>
+							доки хто-небудь доєднається до твоєї гри
+							https://t.me/naval_clash_bot/play
+						`, myUserId, { disable_notification: true })
+					}
+					
+					else {
 						sendMessage(`
 							Okay, here is the link to play with <b>whoever</b> wants to join, just <b>click</b> on it
 							and <b>wait</b> until somebody will join your game
@@ -355,6 +378,26 @@ if (Number.isInteger(Settings.telegramBotPort) &&
 								}],
 								[{
 									text: 'Со случайным противником',
+									callback_data: 'send_link'
+								}]
+							]
+						}
+					});
+
+				}
+
+				else if (replyInUkrainian) {
+
+					sendMessage(`Привіт, з ким ти хочеш зіграти?`, myUserId, {
+						disable_notification: true,
+						reply_markup: {
+							inline_keyboard: [
+								[{
+									text: 'З другом',
+									callback_data: 'create_game'
+								}],
+								[{
+									text: 'З випадковим супротивником',
 									callback_data: 'send_link'
 								}]
 							]
