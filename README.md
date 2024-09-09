@@ -1,3 +1,11 @@
+#  💜If you like my projects, you can support me.
+
+| Coin/Symbol | Network | Adress |
+|------|---------|--------|
+| Bitcoin (BTC) | BTC | 1LU7DtLiKkWe3aAXbhRhNAMUFdrapWuAHW |
+| Tether (USDT) | TRC20 | TK7f7TXozWVbkHxdArAJd2rELu725q1Ac5 |
+| Tether (USDT) | TON | UQDI4e7xm_B7O_REaYd5CoyEz1Ki08t0EPlUim022_K9B2xa |
+
 # Naval Clash Game - Telegram Mini App
 
 🎉🎉🎉 [**1st PLACE – $1,500**](https://t.me/contest/342) 🎉🎉🎉
